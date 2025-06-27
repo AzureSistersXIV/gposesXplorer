@@ -1,0 +1,32 @@
+@base-colors: black, white, red, blue, green, yellow, purple, #ffd700, silver, #cd7f32;
+@base-names: black, white, red, blue, green, yellow, purple, gold, silver, bronze;
+
+.generate-root-vars(@i: 1) when (@i <= length(@base-names)) {
+  @name: extract(@base-names, @i);
+  @color: extract(@base-colors, @i);
+
+  // Create original, light, and dark CSS custom properties
+  --@{name}: @{color};
+  --@{name}-light: lighten(@color, 20%);
+  --@{name}-dark: darken(@color, 20%);
+
+  .generate-root-vars(@i + 1);
+}
+
+:root {
+  .generate-root-vars();
+}
+
+
+
+html, body{
+    background-color: var(--black);
+    color: var(--white);
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+@import "./navbar.less";
+@import "./repository.less";

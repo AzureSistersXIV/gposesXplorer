@@ -52,7 +52,14 @@ header nav h2 {
   display: flex;
   padding: 0.25rem;
 }
-div.repository h3 {
+div.repository {
+  display: block;
+}
+div.repository .folder h3 {
   margin: 0;
   padding: 1rem 0 0.25rem;
+}
+div.repository .folder .folder-content {
+  display: flex;
+  flex-flow: row wrap;
 }
