@@ -1,0 +1,58 @@
+:root {
+  --black: black;
+  --black-light: #333333;
+  --black-dark: #000000;
+  --white: white;
+  --white-light: #ffffff;
+  --white-dark: #cccccc;
+  --red: red;
+  --red-light: #ff6666;
+  --red-dark: #990000;
+  --blue: blue;
+  --blue-light: #6666ff;
+  --blue-dark: #000099;
+  --green: green;
+  --green-light: #00e600;
+  --green-dark: #001a00;
+  --yellow: yellow;
+  --yellow-light: #ffff66;
+  --yellow-dark: #999900;
+  --purple: purple;
+  --purple-light: #e600e6;
+  --purple-dark: #1a001a;
+  --gold: #ffd700;
+  --gold-light: #ffe766;
+  --gold-dark: #998100;
+  --silver: silver;
+  --silver-light: #f3f3f3;
+  --silver-dark: #8d8d8d;
+  --bronze: #cd7f32;
+  --bronze-light: #e1b284;
+  --bronze-dark: #7b4c1e;
+}
+html,
+body {
+  background-color: var(--black);
+  color: var(--white);
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+header nav {
+  background-color: var(--black-light);
+  color: var(--silver);
+  padding: 0.25rem;
+  position: sticky;
+  border-radius: 0 0 0.5rem 0.5rem;
+  box-shadow: 0.25rem 0.25rem 0.25rem var(--silver-dark);
+}
+header nav h2 {
+  margin: 0;
+  display: flex;
+  padding: 0.25rem;
+}
+div.repository h3 {
+  margin: 0;
+  padding: 1rem 0 0.25rem;
+}
