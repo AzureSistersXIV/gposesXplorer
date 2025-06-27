@@ -1,0 +1,15 @@
+{
+  "type": "module",
+  "dependencies": {
+    "clean-css": "^5.3.3",
+    "concurrently": "^9.2.0",
+    "less": "^4.3.0",
+    "rollup": "^4.44.1",
+    "terser": "^5.43.1"
+  },
+  "scripts": {
+    "css": "npx lessc assets/css/less/app.less assets/css/app.css && npx lessc --clean-css assets/css/app.css assets/css/app.min.css",
+    "build": "rollup -c && terser assets/js/dist/bundle.js --compress --mangle --output assets/js/bundle.min.js",
+    "build-all": "concurrently \"npm run css\" \"npm run build\""
+  }
+}
