@@ -14,14 +14,14 @@ export class Utilities {
   }
 
   /**
- * Determines if current page is the welcome page.
- * @function isWelcomePage
- * @returns {boolean} True if document title matches welcome page title
- * @example
- * // When title is "Welcome | ComEx"
- * isWelcomePage();  // Returns true
- */
-static isWelcomePage() {
-  return document.title === "Welcome | Gposes";
-}
+   * Determines if current page is the welcome page.
+   * @function isWelcomePage
+   * @returns {boolean} True if document title matches welcome page title
+   * @example
+   * // When title is "Welcome | ComEx"
+   * isWelcomePage();  // Returns true
+   */
+  static isWelcomePage() {
+    return document.title === "Welcome | Gposes Xplorer";
+  }
 }

@@ -36,75 +36,35 @@ export class ElementFactory {
     return nav;
   }
 
-  /**
-   * Creates a subheader element (h3) for a folder.
-   * The subheader displays the folder name and has accessibility attributes.
-   * @param {string} folder - The name of the folder to display.
-   * @returns {HTMLElement} The h3 element representing the subheader.
-   */
-  static createSubHeader(folder = "") {
-    const header = document.createElement("h3");
-    // Set an ARIA role description for accessibility
-    header.ariaRoleDescription = `Folder header ${folder}`;
-    // Set the displayed text to the folder name
-    header.innerText = folder;
-
-    return header;
-  }
-
-  /**
-   * Creates a repository element containing subheaders for each folder.
-   * If a folder name contains a '/', only the first part is used for the subheader.
-   * @param {string[]} folders - Array of folder names to include in the repository.
-   * @returns {HTMLElement} The div element representing the repository.
-   */
-  static createRepository(folders = []) {
+  static createRepository() {
     const repo = document.createElement("div");
     repo.classList = "repository";
-
-    folders.forEach((folderName) => {
-      // Create a subheader for each folder.
-      // If the folder name contains '/', use only the first part.
-      let folder = this.createFolder(folderName);
-
-      if(folderName.includes('/')){
-        folder = this.createFolder(folderName.split('/')[0]);
-      }
-
-      repo.appendChild(folder);
-    });
-
     return repo;
   }
 
-  static createFolder(folderName = ""){
+  static createSourceFolder(name = "", preview = "") {
     const folder = document.createElement("div");
-    folder.classList = "folder";
+    folder.dataset.title = name.split("/")[0].replace(" ", "");
+    folder.id = `source_${name.split("/")[0]}`;
+    folder.className = "card";
 
-    folder.appendChild(this.createSubHeader(folderName));
-    
-    const folderContent = document.createElement("div");
-    folderContent.classList = "folder-content";
-    folderContent.id = `${folderName}Content`
-    folder.appendChild(folderContent);
-
-    return folder;
-  }
-
-  static createCard(link = "", thumbnail = "", name = ""){
-    const card = document.createElement("div");
-    card.className = "card";
+    const container = document.createElement("div");
+    container.classList = "img-div";
+    folder.append(container);
 
     const img = document.createElement("img");
-    img.src = thumbnail;
-    
-    const anchor = document.createElement("a");
-    anchor.href = link;
-    anchor.target = "_blank";
-    anchor.appendChild(img);
+    img.src = preview;
+    if (preview === "../assets/img/folder.png") img.classList = "folder";
+    container.appendChild(img);
 
-    card.appendChild(anchor);
+    img.onload = function () {
+      if (img.naturalHeight < 250) {
+        img.classList = "fullheight";
+        container.style.display = "flex";
+        container.style.justifyContent = "center";
+      }
+    };
 
-    return card;
+    return folder;
   }
 }
