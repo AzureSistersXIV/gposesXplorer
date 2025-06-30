@@ -1,15 +1,57 @@
 div.repository {
-  display: block;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-evenly;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(100vh - 3.33rem);
+  margin-top: 1rem;
+  z-index: 1;
+  position: relative;
 
-  .folder {
-    h3 {
-      margin: 0;
-      padding: 1rem 0 0.25rem;
+  .card {
+    text-align: center;
+    border-radius: 1rem;
+    min-width: 300px;
+    max-width: 300px;
+    min-height: 300px;
+    max-height: 300px;
+    margin: 0.5rem auto;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0.25rem 0.25rem 0.25rem var(--blue-light);
+
+    &::before {
+      content: attr(data-title);
+      display: block;
+      padding: 0 0.5rem;
+      background-color: var(--black);
+      border-radius: 1rem 1rem 0 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .folder-content {
-      display: flex;
-      flex-flow: row wrap;
+    .img-div {
+      background-color: var(--blue-dark);
+      position: relative;
+      overflow: hidden;
+      height: 100%;
+      align-content: space-evenly;
+      display: block;
+
+      img {
+        width: 100%;
+
+        &.fullheight {
+          width: unset;
+          height: 100%;
+        }
+
+        &.folder{
+          scale: 0.8;
+        }
+      }
     }
   }
 }

@@ -1,5 +1,5 @@
-@base-colors: black, white, red, blue, green, yellow, purple, #ffd700, silver, #cd7f32;
-@base-names: black, white, red, blue, green, yellow, purple, gold, silver, bronze;
+@base-colors: #1f1f1f, #f1f1f1, darkred, red, darkblue, blue, lightblue, green, yellow, purple, #ffd700, silver, #cd7f32;
+@base-names: black, white, darkred, red, darkblue, blue, lightblue, green, yellow, purple, gold, silver, bronze;
 
 .generate-root-vars(@i: 1) when (@i <= length(@base-names)) {
   @name: extract(@base-names, @i);
@@ -20,8 +20,8 @@
 
 
 html, body{
-    background-color: var(--black);
-    color: var(--white);
+    background-color: var(--darkblue-dark);
+    color: var(--lightblue-dark);
     height: 100%;
     width: 100%;
     margin: 0;

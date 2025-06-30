@@ -1,16 +1,25 @@
 :root {
-  --black: black;
-  --black-light: #333333;
+  --black: #1f1f1f;
+  --black-light: #525252;
   --black-dark: #000000;
-  --white: white;
+  --white: #f1f1f1;
   --white-light: #ffffff;
-  --white-dark: #cccccc;
+  --white-dark: #bebebe;
+  --darkred: darkred;
+  --darkred-light: #f10000;
+  --darkred-dark: #250000;
   --red: red;
   --red-light: #ff6666;
   --red-dark: #990000;
+  --darkblue: darkblue;
+  --darkblue-light: #0000f1;
+  --darkblue-dark: #000025;
   --blue: blue;
   --blue-light: #6666ff;
   --blue-dark: #000099;
+  --lightblue: lightblue;
+  --lightblue-light: #fbfdfe;
+  --lightblue-dark: #5fb3ce;
   --green: green;
   --green-light: #00e600;
   --green-dark: #001a00;
@@ -32,20 +41,20 @@
 }
 html,
 body {
-  background-color: var(--black);
-  color: var(--white);
+  background-color: var(--darkblue-dark);
+  color: var(--lightblue-dark);
   height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
 }
 header nav {
-  background-color: var(--black-light);
-  color: var(--silver);
+  background-color: var(--blue-dark);
+  color: var(--lightblue-dark);
   padding: 0.25rem;
   position: sticky;
   border-radius: 0 0 0.5rem 0.5rem;
-  box-shadow: 0.25rem 0.25rem 0.25rem var(--silver-dark);
+  box-shadow: 0.25rem 0.25rem 0.25rem var(--blue-light);
 }
 header nav h2 {
   margin: 0;
@@ -53,13 +62,53 @@ header nav h2 {
   padding: 0.25rem;
 }
 div.repository {
-  display: block;
-}
-div.repository .folder h3 {
-  margin: 0;
-  padding: 1rem 0 0.25rem;
-}
-div.repository .folder .folder-content {
   display: flex;
   flex-flow: row wrap;
+  justify-content: space-evenly;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(100vh - 3.33rem);
+  margin-top: 1rem;
+  z-index: 1;
+  position: relative;
+}
+div.repository .card {
+  text-align: center;
+  border-radius: 1rem;
+  min-width: 300px;
+  max-width: 300px;
+  min-height: 300px;
+  max-height: 300px;
+  margin: 0.5rem auto;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0.25rem 0.25rem 0.25rem var(--blue-light);
+}
+div.repository .card::before {
+  content: attr(data-title);
+  display: block;
+  padding: 0 0.5rem;
+  background-color: var(--black);
+  border-radius: 1rem 1rem 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+div.repository .card .img-div {
+  background-color: var(--blue-dark);
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  align-content: space-evenly;
+  display: block;
+}
+div.repository .card .img-div img {
+  width: 100%;
+}
+div.repository .card .img-div img.fullheight {
+  width: unset;
+  height: 100%;
+}
+div.repository .card .img-div img.folder {
+  scale: 0.8;
 }
