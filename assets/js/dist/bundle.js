@@ -66,11 +66,11 @@ class ElementFactory {
     return repo;
   }
 
-  static createSourceFolder(name = "", preview = "") {
+  static createSourceFolder(name = "", link = "", preview = "") {
     const folder = document.createElement("div");
-    folder.dataset.title = name.split("/")[0];
-    folder.dataset.link = name;
-    folder.id = `source_${name.split("/")[0].replace(" ", "")}`;
+    folder.dataset.title = name;
+    folder.dataset.link = link;
+    folder.id = `source_${name.replace(" ", "")}`;
     folder.className = "card";
 
     const container = document.createElement("div");
@@ -176,11 +176,11 @@ class FetchFactory {
       .catch((err) => console.error("Failed to fetch sources :", err.message));
   }
 
-  static async fetchFolders(host, folder) {
+  static async fetchFolders(host, link) {
     return await fetch(`${host}api/folders.php`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ source: folder.dataset.link }),
+      body: new URLSearchParams({ source: link }),
     })
       .then((res) => res.json())
       .then((folders) => {
@@ -193,12 +193,11 @@ class FetchFactory {
       .catch((err) => console.error("Failed to fetch folders :", err.message));
   }
 
-  static async fetchThumbnails(host, folder) {
-
+  static async fetchThumbnails(host, link) {
     return await fetch(`${host}api/thumbnails.php`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ source: folder.dataset.link }),
+      body: new URLSearchParams({ source: link }),
     })
       .then((res) => res.json())
       .then((thumbnails) => {
@@ -229,10 +228,11 @@ document.addEventListener("DOMContentLoaded", function () {
         if (source[1] !== "../assets/img/folder.png") {
           preview = source[1].replace("../", host);
         } else {
-          preview = "../assets/img/folder.png";
+          preview = source[1];
         }
 
         let sourceFolder = ElementFactory.createSourceFolder(
+          source[0].split("/")[0],
           source[0],
           preview
         );
@@ -246,43 +246,68 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-function addClickEvent(source) {
+async function addClickEvent(source) {
   const repository = document.querySelector(".repository");
-  source.addEventListener("click", function (event) {
+  source.addEventListener("click", async function (event) {
     repository.innerHTML = "";
+    let link = event.target.parentElement.parentElement.dataset.link;
+
     const idSpinner = enableLoading();
-    FetchFactory.fetchFolders(host, event.currentTarget).then((entries) => {
+    await FetchFactory.fetchFolders(host, link).then((entries) => {
       if (entries.length > 0) {
         Array.from(entries).forEach((entry) => {
-          let folder = ElementFactory.createSourceFolder(entry[0], entry[1]);
+          let preview =
+            entry[1] !== "../assets/img/folder.png"
+              ? entry[1].replace("../", host)
+              : entry[1];
+          let folder = ElementFactory.createSourceFolder(
+            entry[0],
+            link + "/" + entry[0],
+            preview
+          );
           addClickEvent(folder);
           repository.appendChild(folder);
         });
       }
     });
-    FetchFactory.fetchThumbnails(host, event.currentTarget).then((entries) => {
+    await FetchFactory.fetchThumbnails(host, link).then((entries) => {
       if (entries.length > 0) {
         Array.from(entries).forEach((entry) => {
-          let folder = ElementFactory.createPicture(host, entry[1][0], entry[1][1]);
+          let folder = ElementFactory.createPicture(
+            host,
+            entry[1][0],
+            entry[1][1]
+          );
           repository.appendChild(folder);
         });
-        disableLoading(idSpinner);
       }
     });
+    if (isLoading(idSpinner)) disableLoading(idSpinner);
   });
 }
 
-function enableLoading(){
+function enableLoading() {
+  if (document.querySelector(".repository") !== null)
+    document.querySelector(".repository").style.visibility = "hidden";
   const spinner = ElementFactory.createSpinner();
   let id = Math.random();
   spinner.id = id;
   document.body.appendChild(spinner);
-  
+
   return id;
 }
 
-function disableLoading(id){
+function disableLoading(id) {
+  if (document.querySelector(".repository") !== null)
+    document.querySelector(".repository").style.visibility = "visible";
   const spinner = document.getElementById(id);
   spinner.remove();
+}
+
+function isLoading(id) {
+  return (
+    document.getElementById(id) !== null &&
+    document.getElementById(id) !== undefined
+  );
 }
 //# sourceMappingURL=bundle.js.map

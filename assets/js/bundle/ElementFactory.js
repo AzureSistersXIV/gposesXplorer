@@ -66,11 +66,11 @@ export class ElementFactory {
     return repo;
   }
 
-  static createSourceFolder(name = "", preview = "") {
+  static createSourceFolder(name = "", link = "", preview = "") {
     const folder = document.createElement("div");
-    folder.dataset.title = name.split("/")[0];
-    folder.dataset.link = name;
-    folder.id = `source_${name.split("/")[0].replace(" ", "")}`;
+    folder.dataset.title = name;
+    folder.dataset.link = link;
+    folder.id = `source_${name.replace(" ", "")}`;
     folder.className = "card";
 
     const container = document.createElement("div");

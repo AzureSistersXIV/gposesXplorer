@@ -21,11 +21,11 @@ export class FetchFactory {
       .catch((err) => console.error("Failed to fetch sources :", err.message));
   }
 
-  static async fetchFolders(host, folder) {
+  static async fetchFolders(host, link) {
     return await fetch(`${host}api/folders.php`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ source: folder.dataset.link }),
+      body: new URLSearchParams({ source: link }),
     })
       .then((res) => res.json())
       .then((folders) => {
@@ -38,12 +38,11 @@ export class FetchFactory {
       .catch((err) => console.error("Failed to fetch folders :", err.message));
   }
 
-  static async fetchThumbnails(host, folder) {
-
+  static async fetchThumbnails(host, link) {
     return await fetch(`${host}api/thumbnails.php`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ source: folder.dataset.link }),
+      body: new URLSearchParams({ source: link }),
     })
       .then((res) => res.json())
       .then((thumbnails) => {
