@@ -1,5 +1,4 @@
 // Import the ElementFactory module for creating DOM elements
-import { ElementFactory } from "./ElementFactory";
 import { Utilities } from "./Utilities";
 
 /**
@@ -20,5 +19,40 @@ export class FetchFactory {
         }
       })
       .catch((err) => console.error("Failed to fetch sources :", err.message));
+  }
+
+  static async fetchFolders(host, folder) {
+    return await fetch(`${host}api/folders.php`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ source: folder.dataset.link }),
+    })
+      .then((res) => res.json())
+      .then((folders) => {
+        if (Object.entries(folders).length > 0) {
+          return Object.entries(folders);
+        } else {
+          return [];
+        }
+      })
+      .catch((err) => console.error("Failed to fetch folders :", err.message));
+  }
+
+  static async fetchThumbnails(host, folder) {
+
+    return await fetch(`${host}api/thumbnails.php`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ source: folder.dataset.link }),
+    })
+      .then((res) => res.json())
+      .then((thumbnails) => {
+        if (Object.entries(thumbnails).length > 0) {
+          return Object.entries(thumbnails);
+        } else {
+          return [];
+        }
+      })
+      .catch((err) => console.error("Failed to fetch folders :", err.message));
   }
 }
