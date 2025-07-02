@@ -289,9 +289,13 @@ class Utilities {
   static async loadSources(host = "") {
     const repository = document.querySelector(".repository");
     repository.innerHTML = "";
+
     const spinner = ElementFactory.createSpinner();
     document.body.appendChild(spinner);
+
+    const collator = new Intl.Collator('en', { numeric: true, sensitivity: 'base' });
     await FetchFactory.fetchSources(host, this.isNsfw).then((sources) => {
+      sources.sort((a, b) => collator.compare(a[0], b[0]));
       sources.forEach((source) => {
         let preview = source[1];
         if (source[1] !== "../assets/img/folder.png") {
@@ -316,10 +320,14 @@ class Utilities {
   static async loadFolder(host = "", link = "") {
     const repository = document.querySelector(".repository");
     repository.innerHTML = "";
+
     const spinner = ElementFactory.createSpinner();
     document.body.appendChild(spinner);
+
+    const collator = new Intl.Collator('en', { numeric: true, sensitivity: 'base' });
     await FetchFactory.fetchFolders(host, link).then((folders) => {
-      folders.forEach((folder) => {
+      const sortedFolders = folders.sort((a, b) => collator.compare(a[0], b[0]));
+      sortedFolders.forEach((folder) => {
         let preview = folder[1];
         if (folder[1] !== "../assets/img/folder.png") {
           preview = folder[1].replace("../", host);
@@ -344,7 +352,8 @@ class Utilities {
     });
 
     await FetchFactory.fetchThumbnails(host, link).then((thumbnails) => {
-      thumbnails.forEach((thumbnail) => {
+      const sortedThumbnails = thumbnails.sort((a, b) => collator.compare(a[1][0], b[1][0]));
+      sortedThumbnails.forEach((thumbnail) => {
         repository.appendChild(
           ElementFactory.createPicture(
             host,
@@ -393,7 +402,9 @@ class Utilities {
 
   static goBack() {
     const searchParams = new URLSearchParams(window.location.search);
-    this.goToFolder(searchParams.get("folder").split('/').slice(0, -1).join('/'));    
+    const folder = searchParams.get("folder");
+    this.goToFolder(folder.split('/').slice(0, -1).join('/'));
+    setTimeout(() => document.querySelector(`[data-link="${folder}"]`).scrollIntoView({ behavior: "smooth", block: "nearest" }), 100);
   }
 
   static returnIndex() {
