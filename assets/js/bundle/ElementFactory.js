@@ -54,8 +54,12 @@ export class ElementFactory {
 
     // Create and append the heading to the nav
     const h2 = document.createElement("h2");
-    h2.innerText = "Gposes";
+    h2.innerText = "Gposes Xplorer";
     nav.appendChild(h2);
+
+    const ul = document.createElement("ul");
+    ul.innerHTML = "<li>Index</li><li>Back</li>";
+    nav.appendChild(ul);
 
     return nav;
   }
@@ -123,5 +127,11 @@ export class ElementFactory {
     };
 
     return folder;
+  }
+
+  static createSeparation(){
+    const hr = document.createElement("hr");
+    hr.classList = "separator";
+    return hr;
   }
 }

@@ -1,4 +1,68 @@
 /**
+ * FetchFactory is responsible for handling API requests related to sources
+ * and updating the DOM with the fetched data.
+ */
+class FetchFactory {
+  static async fetchNewSource(host) {
+    return await fetch(`${host}api/new.php`)
+      .then((res) => res.json())
+      .then((sources) => {
+        return Object.entries(sources);
+      })
+      .catch((err) =>
+        console.error("Failed to fetch new sources :", err.message)
+      );
+  }
+
+  static async fetchSources(host, isNsfw) {
+    return await fetch(`${host}api/sources.php?isNsfw=${isNsfw}`)
+      .then((res) => res.json())
+      .then((sources) => {
+        if (Object.entries(sources).length > 0) {
+          return Object.entries(sources);
+        } else {
+          throw new Exception("No folder available !");
+        }
+      })
+      .catch((err) => console.error("Failed to fetch sources :", err.message));
+  }
+
+  static async fetchFolders(host, link) {
+    return await fetch(`${host}api/folders.php`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ source: link }),
+    })
+      .then((res) => res.json())
+      .then((folders) => {
+        if (Object.entries(folders).length > 0) {
+          return Object.entries(folders);
+        } else {
+          return [];
+        }
+      })
+      .catch((err) => console.error("Failed to fetch folders :", err.message));
+  }
+
+  static async fetchThumbnails(host, link) {
+    return await fetch(`${host}api/thumbnails.php`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ source: link }),
+    })
+      .then((res) => res.json())
+      .then((thumbnails) => {
+        if (Object.entries(thumbnails).length > 0) {
+          return Object.entries(thumbnails);
+        } else {
+          return [];
+        }
+      })
+      .catch((err) => console.error("Failed to fetch folders :", err.message));
+  }
+}
+
+/**
  * ElementFactory is a utility class for creating common DOM elements
  * used in the Gposes application, such as headers, navigation bars, subheaders, and repositories.
  */
@@ -54,8 +118,12 @@ class ElementFactory {
 
     // Create and append the heading to the nav
     const h2 = document.createElement("h2");
-    h2.innerText = "Gposes";
+    h2.innerText = "Gposes Xplorer";
     nav.appendChild(h2);
+
+    const ul = document.createElement("ul");
+    ul.innerHTML = "<li>Index</li><li>Back</li>";
+    nav.appendChild(ul);
 
     return nav;
   }
@@ -124,190 +192,301 @@ class ElementFactory {
 
     return folder;
   }
+
+  static createSeparation(){
+    const hr = document.createElement("hr");
+    hr.classList = "separator";
+    return hr;
+  }
 }
 
+/**
+ * Utilities class provides static helper methods for navigation,
+ * loading content, managing NSFW state, and UI updates in Gposes Xplorer.
+ */
 class Utilities {
+  /**
+   * Global flag indicating if NSFW mode is enabled.
+   * Set via setIsNsfw() based on URL and welcome page status.
+   * @type {boolean}
+   */
   static isNsfw = false;
 
   /**
    * Sets NSFW (Not Safe For Work) flag based on URL parameters.
-   * @function setIsNsfw
-   * @description Checks both welcome page status and "isNsfw" query parameter.
+   * Checks both welcome page status and "isNsfw" query parameter.
    * Modifies global `isNsfw` variable.
-   * @note Requires `isWelcomePage()` to be true for NSFW flag activation
+   * Requires `isWelcomePage()` to be true for NSFW flag activation.
    */
   static setIsNsfw() {
     const searchParams = new URLSearchParams(window.location.search);
+    // Only enable NSFW if on the welcome page and query param isNsfw=true
     this.isNsfw = this.isWelcomePage() && searchParams.get("isNsfw") === "true";
   }
 
-  /**
-   * Determines if current page is the welcome page.
-   * @function isWelcomePage
-   * @returns {boolean} True if document title matches welcome page title
-   * @example
-   * // When title is "Welcome | ComEx"
-   * isWelcomePage();  // Returns true
-   */
+  static get WELCOME_TITLE() {
+    return "Welcome | Gposes Xplorer";
+  }
+
   static isWelcomePage() {
-    return document.title === "Welcome | Gposes Xplorer";
-  }
-}
-
-// Import the ElementFactory module for creating DOM elements
-
-/**
- * FetchFactory is responsible for handling API requests related to sources
- * and updating the DOM with the fetched data.
- */
-class FetchFactory {
-  static async fetchSources(host) {
-    Utilities.setIsNsfw();
-
-    return await fetch(`${host}api/sources.php?isNsfw=${Utilities.isNsfw}`)
-      .then((res) => res.json())
-      .then((sources) => {
-        if (Object.entries(sources).length > 0) {
-          return Object.entries(sources);
-        } else {
-          throw new Exception("No folder available !");
-        }
-      })
-      .catch((err) => console.error("Failed to fetch sources :", err.message));
+    return document.title === this.WELCOME_TITLE;
   }
 
-  static async fetchFolders(host, link) {
-    return await fetch(`${host}api/folders.php`, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ source: link }),
-    })
-      .then((res) => res.json())
-      .then((folders) => {
-        if (Object.entries(folders).length > 0) {
-          return Object.entries(folders);
-        } else {
-          return [];
-        }
-      })
-      .catch((err) => console.error("Failed to fetch folders :", err.message));
+  static setDocumentTitle(title = "") {
+    document.title = title;
   }
 
-  static async fetchThumbnails(host, link) {
-    return await fetch(`${host}api/thumbnails.php`, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ source: link }),
-    })
-      .then((res) => res.json())
-      .then((thumbnails) => {
-        if (Object.entries(thumbnails).length > 0) {
-          return Object.entries(thumbnails);
-        } else {
-          return [];
-        }
-      })
-      .catch((err) => console.error("Failed to fetch folders :", err.message));
+  static getLinkTitle(link = "") {
+    let title = "";
+    if (link !== null) {
+      if (
+        link.split("/").pop() === "1.SFW" ||
+        link.split("/").pop() === "2.NSFW"
+      ) {
+        title = link.split("/")[0];
+      } else {
+        title = link.split("/").pop();
+      }
+    }
+    return title;
   }
-}
 
-const host = "https://naslku.synology.me/gposesXplorerAPI/";
+  /**
+   * No search params => ['Welcome', null]
+   * ?folder=Gifts%2F1.SFW => ['Gifts', 'Gifts/1.SFW']
+   * ?folder=Gifts%2F1.SFW%2FMiphie => ['Miphie', 'Gifts/1.SFW/Miphie']
+   */
+  static getFolder() {
+    const searchParams = new URLSearchParams(window.location.search);
+    const link = searchParams.get("folder");
 
-document.addEventListener("DOMContentLoaded", function () {
-  // Header of the page.
-  document.body.appendChild(ElementFactory.createHeader());
+    return [this.getLinkTitle(link), link];
+  }
 
-  const idSpinner = enableLoading();
-  FetchFactory.fetchSources(host).then((sources) => {
-    if (sources.length > 0) {
-      const repository = ElementFactory.createRepository();
-      document.body.appendChild(repository);
+  static loadContent(host = "") {
+    const content = this.getFolder();
+    if (content[1] !== null) {
+      document.querySelector("header ul").style.visibility = "visible";
+      if (
+        content[1].split("/").pop() === content[0] &&
+        content[1].split("/").length > 1
+      ) {
+        document.querySelector("header ul li:nth-child(2)").style.display =
+          "block";
+      } else {
+        document.querySelector("header ul li:nth-child(2)").style.display =
+          "none";
+      }
+      this.setDocumentTitle(`${content[0]} | Gposes Xplorer`);
+      this.loadFolder(host, content[1]);
+    } else {
+      document.querySelector("header ul").style.visibility = "hidden";
+      this.setDocumentTitle(this.WELCOME_TITLE);
+      this.loadSources(host);
+    }
+  }
 
-      Array.from(sources).forEach((source) => {
-        let preview;
+  static async loadSources(host = "") {
+    const repository = document.querySelector(".repository");
+    repository.innerHTML = "";
+    const spinner = ElementFactory.createSpinner();
+    document.body.appendChild(spinner);
+    await FetchFactory.fetchSources(host, this.isNsfw).then((sources) => {
+      sources.forEach((source) => {
+        let preview = source[1];
         if (source[1] !== "../assets/img/folder.png") {
           preview = source[1].replace("../", host);
-        } else {
-          preview = source[1];
         }
 
-        let sourceFolder = ElementFactory.createSourceFolder(
-          source[0].split("/")[0],
+        const sourceFolder = ElementFactory.createSourceFolder(
+          this.getLinkTitle(source[0]),
           source[0],
           preview
         );
-        repository.appendChild(sourceFolder);
+        sourceFolder.addEventListener("click", () => {
+          this.goToFolder(source[0]);
+        });
 
-        addClickEvent(sourceFolder);
+        repository.appendChild(sourceFolder);
+      });
+    });
+    spinner.remove();
+  }
+
+  static async loadFolder(host = "", link = "") {
+    const repository = document.querySelector(".repository");
+    repository.innerHTML = "";
+    const spinner = ElementFactory.createSpinner();
+    document.body.appendChild(spinner);
+    await FetchFactory.fetchFolders(host, link).then((folders) => {
+      folders.forEach((folder) => {
+        let preview = folder[1];
+        if (folder[1] !== "../assets/img/folder.png") {
+          preview = folder[1].replace("../", host);
+        }
+
+        const folderContent = ElementFactory.createSourceFolder(
+          this.getLinkTitle(folder[0]),
+          link + "/" + folder[0],
+          preview
+        );
+
+        folderContent.addEventListener("click", () => {
+          this.goToFolder(link + "/" + folder[0]);
+        });
+
+        repository.appendChild(folderContent);
       });
 
-      disableLoading(idSpinner);
-    }
-  });
+      if (folders.length > 0) {
+        repository.appendChild(ElementFactory.createSeparation());
+      }
+    });
+
+    await FetchFactory.fetchThumbnails(host, link).then((thumbnails) => {
+      thumbnails.forEach((thumbnail) => {
+        repository.appendChild(
+          ElementFactory.createPicture(
+            host,
+            thumbnail[1][0].replace("../", host),
+            thumbnail[1][1].replace("../", host)
+          )
+        );
+      });
+      if (thumbnails.length === 0) {
+        repository.querySelector(".separator").remove();
+      }
+    });
+    spinner.remove();
+  }
+
+  static initMainParts(host = "") {
+    FetchFactory.fetchNewSource(host).then((news) => {
+      if (news.length > 0) {
+        console.warn("New sources added: ", news.concat(", "));
+      }
+    });
+    const header = ElementFactory.createHeader();
+    document.body.appendChild(header);
+    header.querySelector("li").addEventListener("click", () => {
+      this.returnIndex();
+    });
+    header.querySelector("li:nth-child(2)").addEventListener("click", () => {
+      this.goBack();
+    });
+    document.body.appendChild(ElementFactory.createRepository());
+  }
+
+  static goToFolder(link) {
+    const state = { data: "optional state object" };
+    const title = this.getLinkTitle(link);
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.set("folder", link);
+
+    const newUrl =
+      `${document.location.pathname}` +
+      (searchParams.toString() === "" ? "" : "?") +
+      `${searchParams.toString()}`;
+    history.pushState(state, title, newUrl);
+    this.setDocumentTitle(title);
+  }
+
+  static goBack() {
+    const searchParams = new URLSearchParams(window.location.search);
+    this.goToFolder(searchParams.get("folder").split('/').slice(0, -1).join('/'));    
+  }
+
+  static returnIndex() {
+    const state = { data: "optional state object" };
+    const title = this.WELCOME_TITLE;
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.delete("folder");
+
+    const newUrl =
+      `${document.location.pathname}` +
+      (searchParams.toString() === "" ? "" : "?") +
+      `${searchParams.toString()}`;
+    history.pushState(state, title, newUrl);
+    this.setDocumentTitle(title);
+  }
+}
+
+// Host URL for API requests
+const host = "https://naslku.synology.me/gposesXplorerAPI/";
+
+// Main entry point: runs when DOM is fully loaded
+document.addEventListener("DOMContentLoaded", () => {
+  handleInitialLoad();
 });
 
-async function addClickEvent(source) {
-  const repository = document.querySelector(".repository");
-  source.addEventListener("click", async function (event) {
-    repository.innerHTML = "";
-    let link = event.target.parentElement.parentElement.dataset.link;
+async function handleInitialLoad() {
+  Utilities.setIsNsfw();
+  Utilities.initMainParts(host);
 
-    const idSpinner = enableLoading();
-    await FetchFactory.fetchFolders(host, link).then((entries) => {
-      if (entries.length > 0) {
-        Array.from(entries).forEach((entry) => {
-          let preview =
-            entry[1] !== "../assets/img/folder.png"
-              ? entry[1].replace("../", host)
-              : entry[1];
-          let folder = ElementFactory.createSourceFolder(
-            entry[0],
-            link + "/" + entry[0],
-            preview
-          );
-          addClickEvent(folder);
-          repository.appendChild(folder);
-        });
-      }
-    });
-    await FetchFactory.fetchThumbnails(host, link).then((entries) => {
-      if (entries.length > 0) {
-        Array.from(entries).forEach((entry) => {
-          let folder = ElementFactory.createPicture(
-            host,
-            entry[1][0],
-            entry[1][1]
-          );
-          repository.appendChild(folder);
-        });
-      }
-    });
-    if (isLoading(idSpinner)) disableLoading(idSpinner);
-  });
+  addNavigateSuccess(() => Utilities.loadContent(host));
+  Utilities.loadContent(host);
 }
 
-function enableLoading() {
-  if (document.querySelector(".repository") !== null)
-    document.querySelector(".repository").style.visibility = "hidden";
-  const spinner = ElementFactory.createSpinner();
-  let id = Math.random();
-  spinner.id = id;
-  document.body.appendChild(spinner);
+function addNavigateSuccess(f) {
+  if (window.navigation) {
+    window.navigation.removeEventListener("navigatesuccess", f);
+    window.navigation.addEventListener("navigatesuccess", f);
+  } else {
+    // Initialize fallback with robust guard
+    if (!window._navigationFallback) {
+      Object.defineProperty(window, "_navigationFallback", {
+        value: {
+          handlers: new Set(),
+          setup() {
+            // Avoid double-patching
+            if (history.pushState._isMonkeyPatched) return;
 
-  return id;
-}
+            // Patch pushState/replaceState
+            const originalPushState = history.pushState;
+            history.pushState = function (...args) {
+              originalPushState.apply(this, args);
+              window.document.title = args[1];
+              window.dispatchEvent(
+                new CustomEvent("fallbacknavigate", {
+                  detail: { url: window.location.href, state: args[0] },
+                })
+              );
+            };
+            history.pushState._isMonkeyPatched = true;
 
-function disableLoading(id) {
-  if (document.querySelector(".repository") !== null)
-    document.querySelector(".repository").style.visibility = "visible";
-  const spinner = document.getElementById(id);
-  spinner.remove();
-}
+            history.replaceState = function (...args) {
+              originalPushState.apply(this, args);
+              window.document.title = args[1];
+              window.dispatchEvent(
+                new CustomEvent("fallbacknavigate", {
+                  detail: { url: window.location.href, state: args[0] },
+                })
+              );
+            };
+            history.replaceState._isMonkeyPatched = true;
 
-function isLoading(id) {
-  return (
-    document.getElementById(id) !== null &&
-    document.getElementById(id) !== undefined
-  );
+            // Unified event handler
+            const handler = () => {
+              const event = {
+                destination: { url: window.location.href },
+                state: history.state,
+              };
+              window._navigationFallback.handlers.forEach((cb) => cb(event));
+            };
+            window.addEventListener("popstate", handler);
+            window.addEventListener("hashchange", handler);
+            window.addEventListener("fallbacknavigate", handler);
+          },
+        },
+        writable: false,
+        configurable: false,
+      });
+      window._navigationFallback.setup();
+    }
+
+    // Register handler
+    window._navigationFallback.handlers.delete(f);
+    window._navigationFallback.handlers.add(f);
+  }
 }
 //# sourceMappingURL=bundle.js.map

@@ -110,17 +110,42 @@ body {
   }
 }
 header nav {
+  display: flex;
+  flex-flow: row wrap;
   background-color: var(--blue-dark);
   color: var(--lightblue-dark);
   padding: 0.25rem;
   position: sticky;
   border-radius: 0 0 0.5rem 0.5rem;
   box-shadow: 0.25rem 0.25rem 0.25rem var(--blue-light);
+  justify-content: space-between;
 }
 header nav h2 {
   margin: 0;
   display: flex;
   padding: 0.25rem;
+  flex-flow: column;
+  justify-content: center;
+}
+header nav ul {
+  list-style: none;
+  display: flex;
+  flex-flow: row-reverse wrap;
+  margin: 0;
+  padding: 0;
+}
+header nav ul li {
+  display: block;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  border: 2px solid var(--black-dark);
+  cursor: pointer;
+  pointer-events: visible;
+  margin: 0 0.25rem;
+}
+header nav ul li:hover {
+  background-color: var(--black-light);
+  color: var(--white-dark);
 }
 div.repository {
   display: flex;
@@ -189,6 +214,10 @@ div.repository .card .img-div .overlay {
   background-repeat: no-repeat;
   opacity: 0.7;
   z-index: 1;
+}
+div.repository .separator {
+  margin: 2rem;
+  width: 100%;
 }
 /* Shake animation */
 @keyframes shake {

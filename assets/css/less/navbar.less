@@ -1,16 +1,44 @@
 header {
   nav {
+    display: flex;
+    flex-flow: row wrap;
     background-color: var(--blue-dark);
     color: var(--lightblue-dark);
     padding: 0.25rem;
     position: sticky;
     border-radius: 0 0 0.5rem 0.5rem;
     box-shadow: 0.25rem 0.25rem 0.25rem var(--blue-light);
+    justify-content: space-between;
 
     h2 {
       margin: 0;
       display: flex;
       padding: 0.25rem;
+      flex-flow: column;
+      justify-content: center;
+    }
+
+    ul {
+      list-style: none;
+      display: flex;
+      flex-flow: row-reverse wrap;
+      margin: 0;
+      padding: 0;
+
+      li {
+        display: block;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        border: 2px solid var(--black-dark);
+        cursor: pointer;
+        pointer-events: visible;
+        margin: 0 0.25rem;
+
+        &:hover{
+          background-color: var(--black-light);
+          color: var(--white-dark);
+        }
+      }
     }
   }
 }

@@ -1,15 +1,21 @@
-// Import the ElementFactory module for creating DOM elements
-import { Utilities } from "./Utilities";
-
 /**
  * FetchFactory is responsible for handling API requests related to sources
  * and updating the DOM with the fetched data.
  */
 export class FetchFactory {
-  static async fetchSources(host) {
-    Utilities.setIsNsfw();
+  static async fetchNewSource(host) {
+    return await fetch(`${host}api/new.php`)
+      .then((res) => res.json())
+      .then((sources) => {
+        return Object.entries(sources);
+      })
+      .catch((err) =>
+        console.error("Failed to fetch new sources :", err.message)
+      );
+  }
 
-    return await fetch(`${host}api/sources.php?isNsfw=${Utilities.isNsfw}`)
+  static async fetchSources(host, isNsfw) {
+    return await fetch(`${host}api/sources.php?isNsfw=${isNsfw}`)
       .then((res) => res.json())
       .then((sources) => {
         if (Object.entries(sources).length > 0) {
