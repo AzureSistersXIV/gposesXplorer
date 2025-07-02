@@ -147,8 +147,7 @@ header nav ul:nth-child(2) li {
   margin: 0 0.25rem;
 }
 header nav ul:nth-child(2) li:hover {
-  background-color: var(--black-light);
-  color: var(--white-dark);
+  background-color: var(--black);
 }
 header nav ul:nth-child(3) {
   position: absolute;
@@ -206,14 +205,14 @@ div.repository .card::before {
   content: attr(data-title);
   display: block;
   padding: 0.5rem;
-  background-color: var(--black);
+  background-color: var(--blue-dark);
   border-radius: 1rem 1rem 0 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 div.repository .card .img-div {
-  background-color: var(--blue-dark);
+  background-color: var(--black);
   position: relative;
   overflow: hidden;
   height: 100%;
