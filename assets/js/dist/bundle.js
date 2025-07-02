@@ -152,7 +152,7 @@ class ElementFactory {
 
     const img = document.createElement("img");
     img.src = preview;
-    if (preview === "../assets/img/folder.png") img.classList = "folder";
+    if (preview === "./assets/img/folder.png") img.classList = "folder";
     container.appendChild(img);
 
     img.onload = function () {
