@@ -119,6 +119,7 @@ header nav {
   border-radius: 0 0 0.5rem 0.5rem;
   box-shadow: 0.25rem 0.25rem 0.25rem var(--blue-light);
   justify-content: space-between;
+  z-index: 2;
 }
 header nav h2 {
   margin: 0;
@@ -130,11 +131,13 @@ header nav h2 {
 header nav ul {
   list-style: none;
   display: flex;
-  flex-flow: row-reverse wrap;
   margin: 0;
   padding: 0;
 }
-header nav ul li {
+header nav ul:nth-child(2) {
+  flex-flow: row-reverse wrap;
+}
+header nav ul:nth-child(2) li {
   display: block;
   padding: 0.5rem;
   border-radius: 0.5rem;
@@ -143,9 +146,33 @@ header nav ul li {
   pointer-events: visible;
   margin: 0 0.25rem;
 }
-header nav ul li:hover {
+header nav ul:nth-child(2) li:hover {
   background-color: var(--black-light);
   color: var(--white-dark);
+}
+header nav ul:nth-child(3) {
+  position: absolute;
+  top: 2.8rem;
+  left: 2rem;
+}
+header nav ul:nth-child(3) li input {
+  display: none;
+}
+header nav ul:nth-child(3) li input + label {
+  cursor: inherit;
+  border: 2px solid var(--darkblue-dark);
+  padding: 0.5rem;
+  display: block;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  pointer-events: visible;
+  margin: 0;
+  background-color: var(--blue-dark);
+  box-shadow: 0.25rem 0.25rem 0.25rem var(--blue-light);
+  border-radius: 0 0 0.5rem 0.5rem;
+}
+header nav ul:nth-child(3) li input:checked + label {
+  border-color: var(--lightblue-dark);
 }
 div.repository {
   display: flex;
@@ -157,6 +184,10 @@ div.repository {
   margin-top: 0.25rem;
   z-index: 1;
   position: relative;
+}
+div.repository span {
+  height: 2.8rem;
+  width: 100%;
 }
 div.repository .card {
   position: relative;

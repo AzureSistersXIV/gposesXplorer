@@ -125,6 +125,11 @@ class ElementFactory {
     ul.innerHTML = "<li>Index</li><li>Back</li>";
     nav.appendChild(ul);
 
+    const options = document.createElement("ul");
+    options.innerHTML = "<li><input type='radio' id='isNsfwFalse' name='isNSFW' value='false'><label for='isNsfwFalse'>SFW</label></li>"
+    + "<li><input type='radio' id='isNsfwTrue' name='isNSFW' value='true'><label for='isNsfwTrue'>NSFW</label></li>";
+    nav.appendChild(options);
+
     return nav;
   }
 
@@ -264,23 +269,28 @@ class Utilities {
   }
 
   static loadContent(host = "") {
+    this.setIsNsfw();
     const content = this.getFolder();
     if (content[1] !== null) {
-      document.querySelector("header ul").style.visibility = "visible";
+      document.querySelector("header ul:nth-child(3)").style.visibility = "hidden";
+      document.querySelector("header ul:nth-child(2)").style.visibility = "visible";
       if (
         content[1].split("/").pop() === content[0] &&
         content[1].split("/").length > 1
       ) {
-        document.querySelector("header ul li:nth-child(2)").style.display =
+        document.querySelector("header ul:nth-child(2) li:nth-child(2)").style.display =
           "block";
       } else {
-        document.querySelector("header ul li:nth-child(2)").style.display =
+        document.querySelector("header ul:nth-child(2) li:nth-child(2)").style.display =
           "none";
       }
       this.setDocumentTitle(`${content[0]} | Gposes Xplorer`);
       this.loadFolder(host, content[1]);
     } else {
-      document.querySelector("header ul").style.visibility = "hidden";
+      const searchParams = new URLSearchParams(window.location.search);
+      document.querySelector(`header ul input[name='isNSFW'][value='${this.isNsfw}']`).checked = true;
+      document.querySelector("header ul:nth-child(3)").style.visibility = searchParams.get("isNsfw") === null ? "hidden" : "visible";
+      document.querySelector("header ul:nth-child(2)").style.visibility = "hidden";
       this.setDocumentTitle(this.WELCOME_TITLE);
       this.loadSources(host);
     }
@@ -288,7 +298,7 @@ class Utilities {
 
   static async loadSources(host = "") {
     const repository = document.querySelector(".repository");
-    repository.innerHTML = "";
+    repository.innerHTML = "<span></span>";
 
     const spinner = ElementFactory.createSpinner();
     document.body.appendChild(spinner);
@@ -375,14 +385,22 @@ class Utilities {
         console.warn("New sources added: ", news.concat(", "));
       }
     });
+
     const header = ElementFactory.createHeader();
     document.body.appendChild(header);
-    header.querySelector("li").addEventListener("click", () => {
+    header.querySelector("ul:nth-child(2) li").addEventListener("click", () => {
       this.returnIndex();
     });
-    header.querySelector("li:nth-child(2)").addEventListener("click", () => {
+    header.querySelector("ul:nth-child(2) li:nth-child(2)").addEventListener("click", () => {
       this.goBack();
     });
+
+    Array.from(document.querySelectorAll('header ul:nth-child(3) li label')).forEach((label) => {
+      label.addEventListener("click", (event) => {
+        this.changeNsfwPart(event.currentTarget.previousElementSibling.value);
+      });
+    });
+
     document.body.appendChild(ElementFactory.createRepository());
   }
 
@@ -404,7 +422,7 @@ class Utilities {
     const searchParams = new URLSearchParams(window.location.search);
     const folder = searchParams.get("folder");
     this.goToFolder(folder.split('/').slice(0, -1).join('/'));
-    setTimeout(() => document.querySelector(`[data-link="${folder}"]`).scrollIntoView({ behavior: "smooth", block: "nearest" }), 100);
+    setTimeout(() => document.querySelector(`[data-link="${folder}"]`).scrollIntoView({ behavior: "smooth", block: "nearest" }), 200);
   }
 
   static returnIndex() {
@@ -412,6 +430,20 @@ class Utilities {
     const title = this.WELCOME_TITLE;
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.delete("folder");
+
+    const newUrl =
+      `${document.location.pathname}` +
+      (searchParams.toString() === "" ? "" : "?") +
+      `${searchParams.toString()}`;
+    history.pushState(state, title, newUrl);
+    this.setDocumentTitle(title);
+  }
+
+  static changeNsfwPart(value){
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.set("isNsfw", value);
+    const state = { data: "optional state object" };
+    const title = this.WELCOME_TITLE;
 
     const newUrl =
       `${document.location.pathname}` +

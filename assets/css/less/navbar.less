@@ -9,6 +9,7 @@ header {
     border-radius: 0 0 0.5rem 0.5rem;
     box-shadow: 0.25rem 0.25rem 0.25rem var(--blue-light);
     justify-content: space-between;
+    z-index: 2;
 
     h2 {
       margin: 0;
@@ -21,22 +22,55 @@ header {
     ul {
       list-style: none;
       display: flex;
-      flex-flow: row-reverse wrap;
       margin: 0;
       padding: 0;
 
-      li {
-        display: block;
-        padding: 0.5rem;
-        border-radius: 0.5rem;
-        border: 2px solid var(--black-dark);
-        cursor: pointer;
-        pointer-events: visible;
-        margin: 0 0.25rem;
+      &:nth-child(2) {
+        flex-flow: row-reverse wrap;
 
-        &:hover{
-          background-color: var(--black-light);
-          color: var(--white-dark);
+        li {
+          display: block;
+          padding: 0.5rem;
+          border-radius: 0.5rem;
+          border: 2px solid var(--black-dark);
+          cursor: pointer;
+          pointer-events: visible;
+          margin: 0 0.25rem;
+
+          &:hover {
+            background-color: var(--black-light);
+            color: var(--white-dark);
+          }
+        }
+      }
+
+      &:nth-child(3) {
+        position: absolute;
+        top: 2.8rem;
+        left: 2rem;
+
+        li {
+          input {
+            display: none;
+          }
+
+          input + label {
+            cursor: inherit;
+            border: 2px solid var(--darkblue-dark);
+            padding: 0.5rem;
+            display: block;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            pointer-events: visible;
+            margin: 0;
+            background-color: var(--blue-dark);
+            box-shadow: 0.25rem 0.25rem 0.25rem var(--blue-light);
+            border-radius: 0 0 0.5rem 0.5rem;
+          }
+
+          input:checked + label {
+            border-color: var(--lightblue-dark);
+          }
         }
       }
     }

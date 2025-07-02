@@ -61,6 +61,11 @@ export class ElementFactory {
     ul.innerHTML = "<li>Index</li><li>Back</li>";
     nav.appendChild(ul);
 
+    const options = document.createElement("ul");
+    options.innerHTML = "<li><input type='radio' id='isNsfwFalse' name='isNSFW' value='false'><label for='isNsfwFalse'>SFW</label></li>"
+    + "<li><input type='radio' id='isNsfwTrue' name='isNSFW' value='true'><label for='isNsfwTrue'>NSFW</label></li>";
+    nav.appendChild(options);
+
     return nav;
   }
 
