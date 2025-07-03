@@ -107,7 +107,7 @@ export class Utilities {
     const spinner = ElementFactory.createSpinner();
     document.body.appendChild(spinner);
 
-    repository.innerHTML += "<h3>Last addition : </h3>";
+    repository.innerHTML += "<h3>Last addition</h3>";
     await FetchFactory.fetchLast(host, this.isNsfw, true)
       .then((additions) => {
         const carousel = ElementFactory.createRecentCarousel(host, additions);
@@ -122,6 +122,8 @@ export class Utilities {
         repository.appendChild(ElementFactory.createSeparation());
       })
       .catch((err) => console.error(err.message));
+
+      repository.innerHTML += "<h3>Sources</h3>";
 
     const collator = new Intl.Collator("en", {
       numeric: true,

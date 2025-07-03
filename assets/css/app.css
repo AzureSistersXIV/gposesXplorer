@@ -43,6 +43,7 @@
   --size-medium: 200px;
   --size-small: 150px;
   --size-smaller: 100px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 html,
 body {
@@ -188,6 +189,10 @@ div.repository {
   margin-top: 0.25rem;
   z-index: 1;
   position: relative;
+}
+div.repository h3 {
+  width: 100%;
+  text-align: center;
 }
 div.repository span {
   height: 2.8rem;
