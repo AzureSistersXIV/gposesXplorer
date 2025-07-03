@@ -38,6 +38,11 @@
   --bronze: #cd7f32;
   --bronze-light: #e1b284;
   --bronze-dark: #7b4c1e;
+  --size-larger: 300px;
+  --size-large: 250px;
+  --size-medium: 200px;
+  --size-small: 150px;
+  --size-smaller: 100px;
 }
 html,
 body {
@@ -192,14 +197,22 @@ div.repository .card {
   position: relative;
   text-align: center;
   border-radius: 1rem;
-  min-width: 300px;
-  max-width: 300px;
-  min-height: 300px;
-  max-height: 300px;
+  min-width: var(--size-larger);
+  max-width: var(--size-larger);
+  min-height: var(--size-larger);
+  max-height: var(--size-larger);
   margin: 0.5rem auto;
   overflow: hidden;
   cursor: pointer;
   box-shadow: 0.25rem 0.25rem 0.25rem var(--blue-light);
+}
+@media (max-width: 722px) {
+  div.repository .card {
+    min-width: var(--size-medium);
+    max-width: var(--size-medium);
+    min-height: var(--size-medium);
+    max-height: var(--size-medium);
+  }
 }
 div.repository .card::before {
   content: attr(data-title);
@@ -250,6 +263,38 @@ div.repository .separator {
   width: 100%;
   box-shadow: 0.25rem 0.25rem 0.25rem var(--blue-light);
   border-color: var(--lightblue-dark);
+}
+div.repository .carousel {
+  overflow: hidden;
+}
+div.repository .carousel .carousel-container {
+  width: 100%;
+  overflow-x: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+div.repository .carousel .carousel-container .carousel-tracker {
+  display: flex;
+  width: fit-content;
+  scroll-snap-align: start;
+}
+div.repository .carousel .carousel-container .carousel-tracker .card {
+  flex: 0 0 calc(100% / var(--max-items));
+  scroll-snap-align: center;
+  box-sizing: border-box;
+  margin: 0 1.5rem;
+  min-width: var(--size-medium);
+  max-width: var(--size-medium);
+  min-height: var(--size-medium);
+  max-height: var(--size-medium);
+}
+@media (max-width: 722px) {
+  div.repository .carousel .carousel-container .carousel-tracker .card {
+    min-width: var(--size-small);
+    max-width: var(--size-small);
+    min-height: var(--size-small);
+    max-height: var(--size-small);
+  }
 }
 /* Shake animation */
 @keyframes shake {

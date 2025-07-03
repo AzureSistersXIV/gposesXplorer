@@ -27,6 +27,20 @@ export class FetchFactory {
       .catch((err) => console.error("Failed to fetch sources :", err.message));
   }
 
+  static async fetchLast(host, isNsfw = false, folder = false) {
+    return await fetch(`${host}api/last.php?isNsfw=${isNsfw}&folder=${folder}`)
+    .then((res) => res.json())
+    .then((contents) => {      
+      if(contents.length > 24){
+        return Array.from(contents).slice(0,24);
+      } else if (contents.length > 0){
+        return Array.from(contents);
+      } else {
+        throw new Exception("No recent addition!");
+      }
+    });
+  }
+
   static async fetchFolders(host, link) {
     return await fetch(`${host}api/folders.php`, {
       method: "POST",

@@ -27,6 +27,20 @@ class FetchFactory {
       .catch((err) => console.error("Failed to fetch sources :", err.message));
   }
 
+  static async fetchLast(host, isNsfw = false, folder = false) {
+    return await fetch(`${host}api/last.php?isNsfw=${isNsfw}&folder=${folder}`)
+    .then((res) => res.json())
+    .then((contents) => {      
+      if(contents.length > 24){
+        return Array.from(contents).slice(0,24);
+      } else if (contents.length > 0){
+        return Array.from(contents);
+      } else {
+        throw new Exception("No recent addition!");
+      }
+    });
+  }
+
   static async fetchFolders(host, link) {
     return await fetch(`${host}api/folders.php`, {
       method: "POST",
@@ -126,8 +140,9 @@ class ElementFactory {
     nav.appendChild(ul);
 
     const options = document.createElement("ul");
-    options.innerHTML = "<li><input type='radio' id='isNsfwFalse' name='isNSFW' value='false'><label for='isNsfwFalse'>SFW</label></li>"
-    + "<li><input type='radio' id='isNsfwTrue' name='isNSFW' value='true'><label for='isNsfwTrue'>NSFW</label></li>";
+    options.innerHTML =
+      "<li><input type='radio' id='isNsfwFalse' name='isNSFW' value='false'><label for='isNsfwFalse'>SFW</label></li>" +
+      "<li><input type='radio' id='isNsfwTrue' name='isNSFW' value='true'><label for='isNsfwTrue'>NSFW</label></li>";
     nav.appendChild(options);
 
     return nav;
@@ -143,7 +158,6 @@ class ElementFactory {
     const folder = document.createElement("div");
     folder.dataset.title = name;
     folder.dataset.link = link;
-    folder.id = `source_${name.replace(" ", "")}`;
     folder.className = "card";
 
     const container = document.createElement("div");
@@ -153,6 +167,7 @@ class ElementFactory {
     const img = document.createElement("img");
     img.src = preview;
     if (preview === "./assets/img/folder.png") img.classList = "folder";
+    img.alt = preview.split("/").pop();
     container.appendChild(img);
 
     img.onload = function () {
@@ -173,7 +188,6 @@ class ElementFactory {
   static createPicture(host = "", link = "", preview = "") {
     const folder = document.createElement("div");
     folder.dataset.title = link.split("/").pop();
-    folder.id = `picture_${link.split("/")[0].replace(" ", "")}`;
     folder.className = "card";
 
     const container = document.createElement("a");
@@ -185,6 +199,7 @@ class ElementFactory {
     const img = document.createElement("img");
     img.src = preview.replace("../", host);
     img.loading = "lazy";
+    img.alt = preview.split("/").pop();
     container.appendChild(img);
 
     img.onload = function () {
@@ -198,10 +213,65 @@ class ElementFactory {
     return folder;
   }
 
-  static createSeparation(){
+  static createSeparation() {
     const hr = document.createElement("hr");
     hr.classList = "separator";
     return hr;
+  }
+
+  static scrollCarousel(direction) {
+    const container = document.querySelector(".carousel-container");
+    const scrollAmount = container.offsetWidth; // 1 full page of 8
+    container.scrollBy({
+      left: direction * scrollAmount,
+      behavior: "smooth",
+    });
+  }
+
+  static createCarousel() {
+    const carousel = document.createElement("div");
+    carousel.classList = "carousel";
+
+    const container = document.createElement("div");
+    container.classList = "carousel-container";
+    carousel.appendChild(container);
+
+    const tracker = document.createElement("div");
+    tracker.classList = "carousel-tracker";
+    container.appendChild(tracker);
+
+    const btnLeft = document.createElement("button");
+    btnLeft.innerHTML = "←";
+    btnLeft.addEventListener('click', () => {
+      console.log("left");
+      this.scrollCarousel(-1);
+    });
+    carousel.appendChild(btnLeft);
+
+    const btnRight = document.createElement("button");
+    btnRight.innerHTML = "→";
+    btnRight.addEventListener('click', () => {
+      console.log("right");
+      this.scrollCarousel(1);
+    });
+    carousel.appendChild(btnRight);
+
+    return carousel;
+  }
+
+  static createRecentCarousel(host, recentArray = []) {
+    const carousel = this.createCarousel();
+    Array.from(recentArray).forEach((addition) => {
+      const link = `${addition.folder}/${addition.name}`;
+      const preview =
+        addition.preview !== "./assets/img/folder.png"
+          ? encodeURI(`${host}${addition.preview}`)
+          : "./assets/img/folder.png";
+      carousel.firstChild.firstChild.appendChild(
+        this.createSourceFolder(addition.name, link, preview)
+      );
+    });
+    return carousel;
   }
 }
 
@@ -272,25 +342,33 @@ class Utilities {
     this.setIsNsfw();
     const content = this.getFolder();
     if (content[1] !== null) {
-      document.querySelector("header ul:nth-child(3)").style.visibility = "hidden";
-      document.querySelector("header ul:nth-child(2)").style.visibility = "visible";
+      document.querySelector("header ul:nth-child(3)").style.visibility =
+        "hidden";
+      document.querySelector("header ul:nth-child(2)").style.visibility =
+        "visible";
       if (
         content[1].split("/").pop() === content[0] &&
         content[1].split("/").length > 1
       ) {
-        document.querySelector("header ul:nth-child(2) li:nth-child(2)").style.display =
-          "block";
+        document.querySelector(
+          "header ul:nth-child(2) li:nth-child(2)"
+        ).style.display = "block";
       } else {
-        document.querySelector("header ul:nth-child(2) li:nth-child(2)").style.display =
-          "none";
+        document.querySelector(
+          "header ul:nth-child(2) li:nth-child(2)"
+        ).style.display = "none";
       }
       this.setDocumentTitle(`${content[0]} | Gposes Xplorer`);
       this.loadFolder(host, content[1]);
     } else {
       const searchParams = new URLSearchParams(window.location.search);
-      document.querySelector(`header ul input[name='isNSFW'][value='${this.isNsfw}']`).checked = true;
-      document.querySelector("header ul:nth-child(3)").style.visibility = searchParams.get("isNsfw") === null ? "hidden" : "visible";
-      document.querySelector("header ul:nth-child(2)").style.visibility = "hidden";
+      document.querySelector(
+        `header ul input[name='isNSFW'][value='${this.isNsfw}']`
+      ).checked = true;
+      document.querySelector("header ul:nth-child(3)").style.visibility =
+        searchParams.get("isNsfw") === null ? "hidden" : "visible";
+      document.querySelector("header ul:nth-child(2)").style.visibility =
+        "hidden";
       this.setDocumentTitle(this.WELCOME_TITLE);
       this.loadSources(host);
     }
@@ -303,9 +381,30 @@ class Utilities {
     const spinner = ElementFactory.createSpinner();
     document.body.appendChild(spinner);
 
-    const collator = new Intl.Collator('en', { numeric: true, sensitivity: 'base' });
+    repository.innerHTML += "<h3>Last addition : </h3>";
+    await FetchFactory.fetchLast(host, this.isNsfw, true)
+      .then((additions) => {
+        const carousel = ElementFactory.createRecentCarousel(host, additions);
+        repository.appendChild(carousel);
+
+        Array.from(carousel.querySelectorAll(".card")).forEach((card, idx) => {
+          card.addEventListener("click", () => {
+            this.goToFolder(card.dataset.link);
+          });
+        });
+
+        repository.appendChild(ElementFactory.createSeparation());
+      })
+      .catch((err) => console.error(err.message));
+
+    const collator = new Intl.Collator("en", {
+      numeric: true,
+      sensitivity: "base",
+    });
     await FetchFactory.fetchSources(host, this.isNsfw).then((sources) => {
-      sources.sort((a, b) => collator.compare(a[0], b[0]));
+      sources.sort((a, b) =>
+        collator.compare(a[0], b[0])
+      );
       sources.forEach((source) => {
         let preview = source[1];
         if (source[1] !== "../assets/img/folder.png") {
@@ -323,7 +422,13 @@ class Utilities {
 
         repository.appendChild(sourceFolder);
       });
+
+      const maxItems = Math.max(...this.itemsPerFlexRow(repository));
+      Array.from(document.querySelectorAll('.carousel .card')).forEach((card) => {
+        card.style = `--max-items: ${maxItems}`;
+      });
     });
+    
     spinner.remove();
   }
 
@@ -334,9 +439,14 @@ class Utilities {
     const spinner = ElementFactory.createSpinner();
     document.body.appendChild(spinner);
 
-    const collator = new Intl.Collator('en', { numeric: true, sensitivity: 'base' });
+    const collator = new Intl.Collator("en", {
+      numeric: true,
+      sensitivity: "base",
+    });
     await FetchFactory.fetchFolders(host, link).then((folders) => {
-      const sortedFolders = folders.sort((a, b) => collator.compare(a[0], b[0]));
+      const sortedFolders = folders.sort((a, b) =>
+        collator.compare(a[0], b[0])
+      );
       sortedFolders.forEach((folder) => {
         let preview = folder[1];
         if (folder[1] !== "../assets/img/folder.png") {
@@ -362,7 +472,9 @@ class Utilities {
     });
 
     await FetchFactory.fetchThumbnails(host, link).then((thumbnails) => {
-      const sortedThumbnails = thumbnails.sort((a, b) => collator.compare(a[1][0], b[1][0]));
+      const sortedThumbnails = thumbnails.sort((a, b) =>
+        collator.compare(a[1][0], b[1][0])
+      );
       sortedThumbnails.forEach((thumbnail) => {
         repository.appendChild(
           ElementFactory.createPicture(
@@ -391,11 +503,15 @@ class Utilities {
     header.querySelector("ul:nth-child(2) li").addEventListener("click", () => {
       this.returnIndex();
     });
-    header.querySelector("ul:nth-child(2) li:nth-child(2)").addEventListener("click", () => {
-      this.goBack();
-    });
+    header
+      .querySelector("ul:nth-child(2) li:nth-child(2)")
+      .addEventListener("click", () => {
+        this.goBack();
+      });
 
-    Array.from(document.querySelectorAll('header ul:nth-child(3) li label')).forEach((label) => {
+    Array.from(
+      document.querySelectorAll("header ul:nth-child(3) li label")
+    ).forEach((label) => {
       label.addEventListener("click", (event) => {
         this.changeNsfwPart(event.currentTarget.previousElementSibling.value);
       });
@@ -421,8 +537,14 @@ class Utilities {
   static goBack() {
     const searchParams = new URLSearchParams(window.location.search);
     const folder = searchParams.get("folder");
-    this.goToFolder(folder.split('/').slice(0, -1).join('/'));
-    setTimeout(() => document.querySelector(`[data-link="${folder}"]`).scrollIntoView({ behavior: "smooth", block: "nearest" }), 200);
+    this.goToFolder(folder.split("/").slice(0, -1).join("/"));
+    setTimeout(
+      () =>
+        document
+          .querySelector(`[data-link="${folder}"]`)
+          .scrollIntoView({ behavior: "smooth", block: "nearest" }),
+      500
+    );
   }
 
   static returnIndex() {
@@ -439,7 +561,7 @@ class Utilities {
     this.setDocumentTitle(title);
   }
 
-  static changeNsfwPart(value){
+  static changeNsfwPart(value) {
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.set("isNsfw", value);
     const state = { data: "optional state object" };
@@ -451,6 +573,21 @@ class Utilities {
       `${searchParams.toString()}`;
     history.pushState(state, title, newUrl);
     this.setDocumentTitle(title);
+  }
+
+  static itemsPerFlexRow(container) {
+    const children = Array.from(container.children);
+    const rows = {};
+
+    children.forEach((child) => {
+      const top = child.offsetTop;
+      if (!rows[top]) {
+        rows[top] = [];
+      }
+      rows[top].push(child);
+    });
+
+    return Object.values(rows).map((rowItems) => rowItems.length);
   }
 }
 

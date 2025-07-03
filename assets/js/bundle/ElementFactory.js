@@ -62,8 +62,9 @@ export class ElementFactory {
     nav.appendChild(ul);
 
     const options = document.createElement("ul");
-    options.innerHTML = "<li><input type='radio' id='isNsfwFalse' name='isNSFW' value='false'><label for='isNsfwFalse'>SFW</label></li>"
-    + "<li><input type='radio' id='isNsfwTrue' name='isNSFW' value='true'><label for='isNsfwTrue'>NSFW</label></li>";
+    options.innerHTML =
+      "<li><input type='radio' id='isNsfwFalse' name='isNSFW' value='false'><label for='isNsfwFalse'>SFW</label></li>" +
+      "<li><input type='radio' id='isNsfwTrue' name='isNSFW' value='true'><label for='isNsfwTrue'>NSFW</label></li>";
     nav.appendChild(options);
 
     return nav;
@@ -79,7 +80,6 @@ export class ElementFactory {
     const folder = document.createElement("div");
     folder.dataset.title = name;
     folder.dataset.link = link;
-    folder.id = `source_${name.replace(" ", "")}`;
     folder.className = "card";
 
     const container = document.createElement("div");
@@ -89,6 +89,7 @@ export class ElementFactory {
     const img = document.createElement("img");
     img.src = preview;
     if (preview === "./assets/img/folder.png") img.classList = "folder";
+    img.alt = preview.split("/").pop();
     container.appendChild(img);
 
     img.onload = function () {
@@ -109,7 +110,6 @@ export class ElementFactory {
   static createPicture(host = "", link = "", preview = "") {
     const folder = document.createElement("div");
     folder.dataset.title = link.split("/").pop();
-    folder.id = `picture_${link.split("/")[0].replace(" ", "")}`;
     folder.className = "card";
 
     const container = document.createElement("a");
@@ -121,6 +121,7 @@ export class ElementFactory {
     const img = document.createElement("img");
     img.src = preview.replace("../", host);
     img.loading = "lazy";
+    img.alt = preview.split("/").pop();
     container.appendChild(img);
 
     img.onload = function () {
@@ -134,9 +135,64 @@ export class ElementFactory {
     return folder;
   }
 
-  static createSeparation(){
+  static createSeparation() {
     const hr = document.createElement("hr");
     hr.classList = "separator";
     return hr;
+  }
+
+  static scrollCarousel(direction) {
+    const container = document.querySelector(".carousel-container");
+    const scrollAmount = container.offsetWidth; // 1 full page of 8
+    container.scrollBy({
+      left: direction * scrollAmount,
+      behavior: "smooth",
+    });
+  }
+
+  static createCarousel() {
+    const carousel = document.createElement("div");
+    carousel.classList = "carousel";
+
+    const container = document.createElement("div");
+    container.classList = "carousel-container";
+    carousel.appendChild(container);
+
+    const tracker = document.createElement("div");
+    tracker.classList = "carousel-tracker";
+    container.appendChild(tracker);
+
+    const btnLeft = document.createElement("button");
+    btnLeft.innerHTML = "←";
+    btnLeft.addEventListener('click', () => {
+      console.log("left");
+      this.scrollCarousel(-1);
+    });
+    carousel.appendChild(btnLeft);
+
+    const btnRight = document.createElement("button");
+    btnRight.innerHTML = "→";
+    btnRight.addEventListener('click', () => {
+      console.log("right");
+      this.scrollCarousel(1);
+    });
+    carousel.appendChild(btnRight);
+
+    return carousel;
+  }
+
+  static createRecentCarousel(host, recentArray = []) {
+    const carousel = this.createCarousel();
+    Array.from(recentArray).forEach((addition) => {
+      const link = `${addition.folder}/${addition.name}`;
+      const preview =
+        addition.preview !== "./assets/img/folder.png"
+          ? encodeURI(`${host}${addition.preview}`)
+          : "./assets/img/folder.png";
+      carousel.firstChild.firstChild.appendChild(
+        this.createSourceFolder(addition.name, link, preview)
+      );
+    });
+    return carousel;
   }
 }

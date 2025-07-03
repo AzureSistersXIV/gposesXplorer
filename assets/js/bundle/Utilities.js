@@ -68,25 +68,33 @@ export class Utilities {
     this.setIsNsfw();
     const content = this.getFolder();
     if (content[1] !== null) {
-      document.querySelector("header ul:nth-child(3)").style.visibility = "hidden";
-      document.querySelector("header ul:nth-child(2)").style.visibility = "visible";
+      document.querySelector("header ul:nth-child(3)").style.visibility =
+        "hidden";
+      document.querySelector("header ul:nth-child(2)").style.visibility =
+        "visible";
       if (
         content[1].split("/").pop() === content[0] &&
         content[1].split("/").length > 1
       ) {
-        document.querySelector("header ul:nth-child(2) li:nth-child(2)").style.display =
-          "block";
+        document.querySelector(
+          "header ul:nth-child(2) li:nth-child(2)"
+        ).style.display = "block";
       } else {
-        document.querySelector("header ul:nth-child(2) li:nth-child(2)").style.display =
-          "none";
+        document.querySelector(
+          "header ul:nth-child(2) li:nth-child(2)"
+        ).style.display = "none";
       }
       this.setDocumentTitle(`${content[0]} | Gposes Xplorer`);
       this.loadFolder(host, content[1]);
     } else {
       const searchParams = new URLSearchParams(window.location.search);
-      document.querySelector(`header ul input[name='isNSFW'][value='${this.isNsfw}']`).checked = true;
-      document.querySelector("header ul:nth-child(3)").style.visibility = searchParams.get("isNsfw") === null ? "hidden" : "visible";
-      document.querySelector("header ul:nth-child(2)").style.visibility = "hidden";
+      document.querySelector(
+        `header ul input[name='isNSFW'][value='${this.isNsfw}']`
+      ).checked = true;
+      document.querySelector("header ul:nth-child(3)").style.visibility =
+        searchParams.get("isNsfw") === null ? "hidden" : "visible";
+      document.querySelector("header ul:nth-child(2)").style.visibility =
+        "hidden";
       this.setDocumentTitle(this.WELCOME_TITLE);
       this.loadSources(host);
     }
@@ -99,9 +107,30 @@ export class Utilities {
     const spinner = ElementFactory.createSpinner();
     document.body.appendChild(spinner);
 
-    const collator = new Intl.Collator('en', { numeric: true, sensitivity: 'base' });
+    repository.innerHTML += "<h3>Last addition : </h3>";
+    await FetchFactory.fetchLast(host, this.isNsfw, true)
+      .then((additions) => {
+        const carousel = ElementFactory.createRecentCarousel(host, additions);
+        repository.appendChild(carousel);
+
+        Array.from(carousel.querySelectorAll(".card")).forEach((card, idx) => {
+          card.addEventListener("click", () => {
+            this.goToFolder(card.dataset.link);
+          });
+        });
+
+        repository.appendChild(ElementFactory.createSeparation());
+      })
+      .catch((err) => console.error(err.message));
+
+    const collator = new Intl.Collator("en", {
+      numeric: true,
+      sensitivity: "base",
+    });
     await FetchFactory.fetchSources(host, this.isNsfw).then((sources) => {
-      const sortedSources = sources.sort((a, b) => collator.compare(a[0], b[0]));
+      const sortedSources = sources.sort((a, b) =>
+        collator.compare(a[0], b[0])
+      );
       sources.forEach((source) => {
         let preview = source[1];
         if (source[1] !== "../assets/img/folder.png") {
@@ -119,7 +148,13 @@ export class Utilities {
 
         repository.appendChild(sourceFolder);
       });
+
+      const maxItems = Math.max(...this.itemsPerFlexRow(repository));
+      Array.from(document.querySelectorAll('.carousel .card')).forEach((card) => {
+        card.style = `--max-items: ${maxItems}`;
+      });
     });
+    
     spinner.remove();
   }
 
@@ -130,9 +165,14 @@ export class Utilities {
     const spinner = ElementFactory.createSpinner();
     document.body.appendChild(spinner);
 
-    const collator = new Intl.Collator('en', { numeric: true, sensitivity: 'base' });
+    const collator = new Intl.Collator("en", {
+      numeric: true,
+      sensitivity: "base",
+    });
     await FetchFactory.fetchFolders(host, link).then((folders) => {
-      const sortedFolders = folders.sort((a, b) => collator.compare(a[0], b[0]));
+      const sortedFolders = folders.sort((a, b) =>
+        collator.compare(a[0], b[0])
+      );
       sortedFolders.forEach((folder) => {
         let preview = folder[1];
         if (folder[1] !== "../assets/img/folder.png") {
@@ -158,7 +198,9 @@ export class Utilities {
     });
 
     await FetchFactory.fetchThumbnails(host, link).then((thumbnails) => {
-      const sortedThumbnails = thumbnails.sort((a, b) => collator.compare(a[1][0], b[1][0]));
+      const sortedThumbnails = thumbnails.sort((a, b) =>
+        collator.compare(a[1][0], b[1][0])
+      );
       sortedThumbnails.forEach((thumbnail) => {
         repository.appendChild(
           ElementFactory.createPicture(
@@ -187,11 +229,15 @@ export class Utilities {
     header.querySelector("ul:nth-child(2) li").addEventListener("click", () => {
       this.returnIndex();
     });
-    header.querySelector("ul:nth-child(2) li:nth-child(2)").addEventListener("click", () => {
-      this.goBack();
-    });
+    header
+      .querySelector("ul:nth-child(2) li:nth-child(2)")
+      .addEventListener("click", () => {
+        this.goBack();
+      });
 
-    Array.from(document.querySelectorAll('header ul:nth-child(3) li label')).forEach((label) => {
+    Array.from(
+      document.querySelectorAll("header ul:nth-child(3) li label")
+    ).forEach((label) => {
       label.addEventListener("click", (event) => {
         this.changeNsfwPart(event.currentTarget.previousElementSibling.value);
       });
@@ -217,8 +263,14 @@ export class Utilities {
   static goBack() {
     const searchParams = new URLSearchParams(window.location.search);
     const folder = searchParams.get("folder");
-    this.goToFolder(folder.split('/').slice(0, -1).join('/'));
-    setTimeout(() => document.querySelector(`[data-link="${folder}"]`).scrollIntoView({ behavior: "smooth", block: "nearest" }), 200);
+    this.goToFolder(folder.split("/").slice(0, -1).join("/"));
+    setTimeout(
+      () =>
+        document
+          .querySelector(`[data-link="${folder}"]`)
+          .scrollIntoView({ behavior: "smooth", block: "nearest" }),
+      500
+    );
   }
 
   static returnIndex() {
@@ -235,7 +287,7 @@ export class Utilities {
     this.setDocumentTitle(title);
   }
 
-  static changeNsfwPart(value){
+  static changeNsfwPart(value) {
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.set("isNsfw", value);
     const state = { data: "optional state object" };
@@ -247,5 +299,20 @@ export class Utilities {
       `${searchParams.toString()}`;
     history.pushState(state, title, newUrl);
     this.setDocumentTitle(title);
+  }
+
+  static itemsPerFlexRow(container) {
+    const children = Array.from(container.children);
+    const rows = {};
+
+    children.forEach((child) => {
+      const top = child.offsetTop;
+      if (!rows[top]) {
+        rows[top] = [];
+      }
+      rows[top].push(child);
+    });
+
+    return Object.values(rows).map((rowItems) => rowItems.length);
   }
 }
