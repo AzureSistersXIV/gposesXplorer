@@ -1,19 +1,21 @@
 div.repository {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-evenly;
-  overflow-y: auto;
-  overflow-x: hidden;
-  max-height: calc(100vh - 3.33rem);
+  display: flex; // Use flex layout for child elements
+  flex-flow: row wrap; // Allow wrapping of cards
+  justify-content: space-evenly; // Evenly distribute cards
+  overflow-y: auto; // Enable vertical scrolling
+  overflow-x: hidden; // Prevent horizontal scrolling
+  max-height: calc(100vh - 3.33rem); // Limit height to viewport minus header
   margin-top: 0.25rem;
   z-index: 1;
   position: relative;
 
+  // Placeholder span for spacing
   span {
     height: 2.8rem;
     width: 100%;
   }
 
+  // Card styles for folders and images
   .card {
     position: relative;
     text-align: center;
@@ -27,6 +29,7 @@ div.repository {
     cursor: pointer;
     box-shadow: 0.25rem 0.25rem 0.25rem var(--blue-light);
 
+    // Responsive sizing for smaller screens
     @media (max-width: 722px) {
       min-width: var(--size-medium);
       max-width: var(--size-medium);
@@ -34,6 +37,7 @@ div.repository {
       max-height: var(--size-medium);
     }
 
+    // Card title displayed above image
     &::before {
       content: attr(data-title);
       display: block;
@@ -45,6 +49,7 @@ div.repository {
       white-space: nowrap;
     }
 
+    // Image container inside card
     .img-div {
       background-color: var(--black);
       position: relative;
@@ -53,25 +58,30 @@ div.repository {
       align-content: space-evenly;
       display: block;
 
+      // Shake animation on hover
       &:hover {
         .overlay {
           animation: shake 0.3s ease-in-out;
         }
       }
 
+      // Image styles
       img {
         width: 100%;
 
+        // If image is short, fill height instead
         &.fullheight {
           width: unset;
           height: 100%;
         }
 
+        // Folder icon scaling
         &.folder {
           scale: 0.8;
         }
       }
 
+      // Overlay for folder preview effect
       .overlay {
         position: absolute;
         top: 0;
@@ -89,6 +99,7 @@ div.repository {
     }
   }
 
+  // Horizontal separator style
   .separator {
     margin: 2rem;
     width: 100%;
@@ -96,23 +107,27 @@ div.repository {
     border-color: var(--lightblue-dark);
   }
 
+  // Carousel styles for recent/favorite items
   .carousel {
     overflow: hidden;
 
+    // Container for carousel items
     .carousel-container {
       width: 100%;
       overflow-x: hidden;
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
 
+      // Tracker for carousel position (holds cards)
       .carousel-tracker {
         display: flex;
         width: fit-content;
-        scroll-snap-align: start;
+        scroll-snap-align: center; // Center align for snapping
 
+        // Card styles inside carousel
         .card {
           flex: 0 0 calc(100% / var(--max-items));
-          scroll-snap-align: center;
+          scroll-snap-align: start;
           box-sizing: border-box;
           margin: 0 1.5rem;
           min-width: var(--size-medium);
@@ -120,6 +135,7 @@ div.repository {
           min-height: var(--size-medium);
           max-height: var(--size-medium);
 
+          // Responsive sizing for carousel cards
           @media (max-width: 722px) {
             min-width: var(--size-small);
             max-width: var(--size-small);
@@ -129,10 +145,36 @@ div.repository {
         }
       }
     }
+
+    // Carousel navigation button styles
+    .btn {
+      background-color: var(--blue-dark);
+      color: var(--blue-light);
+      position: relative;
+      border: 1px solid var(--blue-dark);
+      font-size: x-large;
+      padding: 0.25rem;
+      border-radius: 3rem;
+      margin: 0.5rem;
+      box-shadow: 0.25rem 0.25rem 0.25rem var(--blue-light);
+      cursor: pointer;
+
+      &.btnLeft {
+        float: left;
+      }
+
+      &.btnRight {
+        float: right;
+      }
+
+      &.hidden{
+        visibility: hidden;
+      }
+    }
   }
 }
 
-/* Shake animation */
+// Shake animation for overlay effect on hover
 @keyframes shake {
   0% {
     transform: translateX(0);

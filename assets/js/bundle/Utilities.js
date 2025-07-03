@@ -153,6 +153,7 @@ export class Utilities {
       Array.from(document.querySelectorAll('.carousel .card')).forEach((card) => {
         card.style = `--max-items: ${maxItems}`;
       });
+      ElementFactory.updateCarouselButton();
     });
     
     spinner.remove();

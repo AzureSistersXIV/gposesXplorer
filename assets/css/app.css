@@ -276,11 +276,11 @@ div.repository .carousel .carousel-container {
 div.repository .carousel .carousel-container .carousel-tracker {
   display: flex;
   width: fit-content;
-  scroll-snap-align: start;
+  scroll-snap-align: center;
 }
 div.repository .carousel .carousel-container .carousel-tracker .card {
   flex: 0 0 calc(100% / var(--max-items));
-  scroll-snap-align: center;
+  scroll-snap-align: start;
   box-sizing: border-box;
   margin: 0 1.5rem;
   min-width: var(--size-medium);
@@ -296,7 +296,27 @@ div.repository .carousel .carousel-container .carousel-tracker .card {
     max-height: var(--size-small);
   }
 }
-/* Shake animation */
+div.repository .carousel .btn {
+  background-color: var(--blue-dark);
+  color: var(--blue-light);
+  position: relative;
+  border: 1px solid var(--blue-dark);
+  font-size: x-large;
+  padding: 0.25rem;
+  border-radius: 3rem;
+  margin: 0.5rem;
+  box-shadow: 0.25rem 0.25rem 0.25rem var(--blue-light);
+  cursor: pointer;
+}
+div.repository .carousel .btn.btnLeft {
+  float: left;
+}
+div.repository .carousel .btn.btnRight {
+  float: right;
+}
+div.repository .carousel .btn.hidden {
+  visibility: hidden;
+}
 @keyframes shake {
   0% {
     transform: translateX(0);
