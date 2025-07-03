@@ -123,7 +123,9 @@ export class Utilities {
       })
       .catch((err) => console.error(err.message));
 
-      repository.innerHTML += "<h3>Sources</h3>";
+      const h3 = document.createElement('h3');
+      h3.innerHTML = 'Sources';
+      repository.appendChild(h3);
 
     const collator = new Intl.Collator("en", {
       numeric: true,
