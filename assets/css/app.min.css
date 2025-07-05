@@ -116,6 +116,10 @@ body {
     transform: rotate(359deg);
   }
 }
+header {
+  position: fixed;
+  width: 100%;
+}
 header nav {
   display: flex;
   flex-flow: row wrap;
@@ -187,7 +191,7 @@ div.repository {
   overflow-y: auto;
   overflow-x: hidden;
   max-height: calc(100vh - 3.33rem);
-  margin-top: 0.25rem;
+  margin-top: 4.2rem;
   z-index: 1;
   position: relative;
 }
