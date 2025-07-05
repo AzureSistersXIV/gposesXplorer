@@ -9,7 +9,7 @@ div.repository {
   z-index: 1;
   position: relative;
 
-  h3{
+  h3 {
     width: 100%;
     text-align: center;
   }
@@ -164,7 +164,7 @@ div.repository {
       box-shadow: 0.25rem 0.25rem 0.25rem var(--blue-light);
       cursor: pointer;
 
-      span{
+      span {
         height: unset;
       }
 
@@ -176,8 +176,35 @@ div.repository {
         float: right;
       }
 
-      &.hidden{
+      &.hidden {
         visibility: hidden;
+      }
+    }
+  }
+
+  .download {
+    position: fixed;
+    width: 50px;
+    height: 50px;
+    right: 1rem;
+    bottom: 1rem;
+    background-color: var(--blue-dark);
+    border-radius: 2rem;
+    box-shadow: 0.25rem 0.25rem 0.25rem var(--blue-light);
+    border: 2px solid var(--darkblue-dark);
+
+    a {
+      color: var(--lightblue);
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-decoration: unset;
+
+      span {
+        height: unset;
+        width: unset;
       }
     }
   }

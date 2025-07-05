@@ -168,6 +168,22 @@ export class ElementFactory {
     return folder;
   }
 
+  static createDownloadButton(host = "", link = ""){
+    const container = document.createElement("div");
+    container.classList = "download";
+    container.title = "Download pictures as zip file";
+
+    const anchor = document.createElement("a");
+    anchor.innerHTML = `<span class="material-symbols-outlined">folder_zip</span>`;
+    anchor.href = `${host}api/zip.php?folder=${encodeURI(link)}`;
+    container.appendChild(anchor);
+
+    console.log("https://naslku.synology.me/gposesXplorerAPI/api/zip.php?folder=Trivia%2F1.SFW");
+    console.log(anchor.href);
+
+    return container;
+  }
+
   /**
    * Creates a horizontal separator element.
    * @returns {HTMLElement} The separator hr element.

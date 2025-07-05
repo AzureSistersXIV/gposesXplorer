@@ -220,6 +220,7 @@ export class Utilities {
       }
     });
     spinner.remove();
+    repository.appendChild(ElementFactory.createDownloadButton(host, link));
   }
 
   static initMainParts(host = "") {
