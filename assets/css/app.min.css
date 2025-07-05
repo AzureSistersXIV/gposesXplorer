@@ -119,6 +119,7 @@ body {
 header {
   position: fixed;
   width: 100%;
+  z-index: 2;
 }
 header nav {
   display: flex;
@@ -130,7 +131,6 @@ header nav {
   border-radius: 0 0 0.5rem 0.5rem;
   box-shadow: 0.25rem 0.25rem 0.25rem var(--blue-light);
   justify-content: space-between;
-  z-index: 2;
 }
 header nav h2 {
   margin: 0;
