@@ -272,9 +272,12 @@ export class Utilities {
     this.goToFolder(folder.split("/").slice(0, -1).join("/"));
     setTimeout(
       () =>
-        document
+        {
+          document
           .querySelector(`[data-link="${folder}"]`)
-          .scrollIntoView({ behavior: "smooth", block: "nearest" }),
+          .scrollIntoView({ behavior: "smooth", block: "nearest" });
+          scrollY(0);
+        },
       500
     );
   }
