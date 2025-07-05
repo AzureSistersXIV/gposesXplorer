@@ -72,7 +72,15 @@ class FetchFactory {
           return [];
         }
       })
-      .catch((err) => console.error("Failed to fetch folders :", err.message));
+      .catch((err) => console.error("Failed to fetch thumbnails :", err.message));
+  }
+
+  static async fetchZipStatus(host, link) {
+    return await fetch(`${host}api/zip.php?folder=${link}`)
+    .then((res) => res.json())
+    .then((contents) => {      
+      return contents.success;
+    });
   }
 }
 
@@ -246,14 +254,14 @@ class ElementFactory {
     return folder;
   }
 
-  static createDownloadButton(host = "", link = ""){
+  static createDownloadButton(){
     const container = document.createElement("div");
     container.classList = "download";
     container.title = "Download pictures as zip file";
 
-    const anchor = document.createElement("a");
+    const anchor = document.createElement("div");
+    anchor.classList = "anchor";
     anchor.innerHTML = `<span class="material-symbols-outlined">folder_zip</span>`;
-    anchor.href = `${host}api/zip.php?folder=${encodeURI(link)}`;
     container.appendChild(anchor);
 
     return container;
@@ -599,7 +607,30 @@ class Utilities {
       }
     });
     spinner.remove();
-    repository.appendChild(ElementFactory.createDownloadButton(host, link));
+    
+    const downloadButton = ElementFactory.createDownloadButton(host, link);
+    repository.appendChild(downloadButton);
+    downloadButton.addEventListener("click", function(){
+      const spinner = ElementFactory.createSpinner();
+      document.body.appendChild(spinner);
+      FetchFactory.fetchZipStatus(host, link)
+      .then((success) => {
+        if(!success){
+          console.error("Error when creating ZIP file.");
+        }else {
+          const anchor = document.createElement('a');
+          anchor.style.display = "none";
+          anchor.href = `${host}api/download.php?folder=${link}`;
+          console.debug(`Downloading ${link}`);
+          anchor.click();
+          anchor.remove();
+        }
+      })
+      .catch(err => console.error(err.message))
+      .finally(() => {
+        spinner.remove();
+      });
+    });
   }
 
   static initMainParts(host = "") {

@@ -168,14 +168,14 @@ export class ElementFactory {
     return folder;
   }
 
-  static createDownloadButton(host = "", link = ""){
+  static createDownloadButton(){
     const container = document.createElement("div");
     container.classList = "download";
     container.title = "Download pictures as zip file";
 
-    const anchor = document.createElement("a");
+    const anchor = document.createElement("div");
+    anchor.classList = "anchor";
     anchor.innerHTML = `<span class="material-symbols-outlined">folder_zip</span>`;
-    anchor.href = `${host}api/zip.php?folder=${encodeURI(link)}`;
     container.appendChild(anchor);
 
     return container;

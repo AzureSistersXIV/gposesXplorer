@@ -72,6 +72,14 @@ export class FetchFactory {
           return [];
         }
       })
-      .catch((err) => console.error("Failed to fetch folders :", err.message));
+      .catch((err) => console.error("Failed to fetch thumbnails :", err.message));
+  }
+
+  static async fetchZipStatus(host, link) {
+    return await fetch(`${host}api/zip.php?folder=${link}`)
+    .then((res) => res.json())
+    .then((contents) => {      
+      return contents.success;
+    });
   }
 }

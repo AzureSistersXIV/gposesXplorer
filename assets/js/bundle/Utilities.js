@@ -220,7 +220,30 @@ export class Utilities {
       }
     });
     spinner.remove();
-    repository.appendChild(ElementFactory.createDownloadButton(host, link));
+    
+    const downloadButton = ElementFactory.createDownloadButton(host, link);
+    repository.appendChild(downloadButton);
+    downloadButton.addEventListener("click", function(){
+      const spinner = ElementFactory.createSpinner();
+      document.body.appendChild(spinner);
+      FetchFactory.fetchZipStatus(host, link)
+      .then((success) => {
+        if(!success){
+          console.error("Error when creating ZIP file.");
+        }else{
+          const anchor = document.createElement('a');
+          anchor.style.display = "none";
+          anchor.href = `${host}api/download.php?folder=${link}`;
+          console.debug(`Downloading ${link}`);
+          anchor.click();
+          anchor.remove();
+        }
+      })
+      .catch(err => console.error(err.message))
+      .finally(() => {
+        spinner.remove();
+      });
+    });
   }
 
   static initMainParts(host = "") {
