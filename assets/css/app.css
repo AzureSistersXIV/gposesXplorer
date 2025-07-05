@@ -141,7 +141,7 @@ header nav ul {
   padding: 0;
 }
 header nav ul:nth-child(2) {
-  flex-flow: row-reverse wrap;
+  flex-flow: row wrap;
 }
 header nav ul:nth-child(2) li {
   display: block;
@@ -312,6 +312,9 @@ div.repository .carousel .btn {
   margin: 0.5rem;
   box-shadow: 0.25rem 0.25rem 0.25rem var(--blue-light);
   cursor: pointer;
+}
+div.repository .carousel .btn span {
+  height: unset;
 }
 div.repository .carousel .btn.btnLeft {
   float: left;

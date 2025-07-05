@@ -140,7 +140,8 @@ class ElementFactory {
 
     // Navigation links (Index, Back)
     const ul = document.createElement("ul");
-    ul.innerHTML = "<li>Index</li><li>Back</li>";
+    ul.innerHTML = `<li title="Index"><span class="material-symbols-outlined">home</span></li>`
+    +`<li title="Back"><span class="material-symbols-outlined">subdirectory_arrow_left</span></li>`;
     nav.appendChild(ul);
 
     // NSFW/SFW radio options
@@ -175,6 +176,7 @@ class ElementFactory {
     folder.dataset.title = name;
     folder.dataset.link = link;
     folder.className = "card";
+    folder.title = `Open the "${name}" folder`;
 
     // Image container
     const container = document.createElement("div");
@@ -216,6 +218,7 @@ class ElementFactory {
     const folder = document.createElement("div");
     folder.dataset.title = link.split("/").pop();
     folder.className = "card";
+    folder.title = `Show the "${folder.dataset.title}" picture`;
 
     // Image anchor container
     const container = document.createElement("a");
@@ -320,8 +323,9 @@ class ElementFactory {
 
     // Left navigation button
     const btnLeft = document.createElement("button");
-    btnLeft.innerHTML = "←";
+    btnLeft.innerHTML = `<span class="material-symbols-outlined">arrow_back</span>`;
     btnLeft.classList = "btn btnLeft";
+    btnLeft.title = "Nextly added";
     btnLeft.addEventListener("click", () => {
       this.scrollCarousel(-1);
     });
@@ -329,8 +333,9 @@ class ElementFactory {
 
     // Right navigation button
     const btnRight = document.createElement("button");
-    btnRight.innerHTML = "→";
+    btnRight.innerHTML = `<span class="material-symbols-outlined">arrow_forward</span>`;
     btnRight.classList = "btn btnRight";
+    btnRight.title = "Previously added";
     btnRight.addEventListener("click", () => {
       this.scrollCarousel(1);
     });
