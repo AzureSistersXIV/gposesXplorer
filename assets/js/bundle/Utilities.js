@@ -249,6 +249,10 @@ export class Utilities {
       });
     });
 
+    const bumper = document.createElement("div");
+    bumper.classList = "bumper";
+    document.body.appendChild(bumper);
+
     document.body.appendChild(ElementFactory.createRepository());
   }
 
@@ -276,7 +280,7 @@ export class Utilities {
           document
           .querySelector(`[data-link="${folder}"]`)
           .scrollIntoView({ behavior: "smooth", block: "nearest" });
-          scrollY(0);
+          document.querySelector(".bumper").scrollIntoView({behaviour: "instant", block: "start"});
         },
       500
     );

@@ -256,9 +256,6 @@ class ElementFactory {
     anchor.href = `${host}api/zip.php?folder=${encodeURI(link)}`;
     container.appendChild(anchor);
 
-    console.log("https://naslku.synology.me/gposesXplorerAPI/api/zip.php?folder=Trivia%2F1.SFW");
-    console.log(anchor.href);
-
     return container;
   }
 
@@ -631,6 +628,10 @@ class Utilities {
       });
     });
 
+    const bumper = document.createElement("div");
+    bumper.classList = "bumper";
+    document.body.appendChild(bumper);
+
     document.body.appendChild(ElementFactory.createRepository());
   }
 
@@ -658,7 +659,7 @@ class Utilities {
           document
           .querySelector(`[data-link="${folder}"]`)
           .scrollIntoView({ behavior: "smooth", block: "nearest" });
-          scrollY(0);
+          document.querySelector(".bumper").scrollIntoView({behaviour: "instant", block: "start"});
         },
       500
     );

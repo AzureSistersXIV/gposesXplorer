@@ -55,6 +55,9 @@ body {
   padding: 0;
   overflow: hidden;
 }
+.bumper {
+  height: 4.2rem;
+}
 /* Spinner styling */
 .spinner {
   display: none;
@@ -191,7 +194,6 @@ div.repository {
   overflow-y: auto;
   overflow-x: hidden;
   max-height: calc(100vh - 3.33rem);
-  margin-top: 4.2rem;
   z-index: 1;
   position: relative;
 }

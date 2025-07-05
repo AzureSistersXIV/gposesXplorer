@@ -178,9 +178,6 @@ export class ElementFactory {
     anchor.href = `${host}api/zip.php?folder=${encodeURI(link)}`;
     container.appendChild(anchor);
 
-    console.log("https://naslku.synology.me/gposesXplorerAPI/api/zip.php?folder=Trivia%2F1.SFW");
-    console.log(anchor.href);
-
     return container;
   }
 
