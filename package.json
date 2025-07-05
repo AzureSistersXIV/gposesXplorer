@@ -10,6 +10,6 @@
   "scripts": {
     "css": "npx lessc assets/css/less/app.less assets/css/app.css && npx lessc --clean-css assets/css/app.css assets/css/app.min.css",
     "build": "rollup -c && terser assets/js/dist/bundle.js --compress --mangle --output assets/js/bundle.min.js",
-    "build-all": "concurrently \"npm run css\" \"npm run build\""
+    "build-all": "npm run css && npm run build"
   }
 }
