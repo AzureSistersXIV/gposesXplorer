@@ -194,6 +194,7 @@ class ElementFactory {
     // Folder preview image
     const img = document.createElement("img");
     img.src = preview;
+    img.loading = "lazy";
     if (preview === "./assets/img/folder.png") img.classList = "folder";
     img.alt = preview.split("/").pop();
     container.appendChild(img);
@@ -510,9 +511,9 @@ class Utilities {
       })
       .catch((err) => console.error(err.message));
 
-      const h3 = document.createElement('h3');
-      h3.innerHTML = 'Sources';
-      repository.appendChild(h3);
+    const h3 = document.createElement("h3");
+    h3.innerHTML = "Sources";
+    repository.appendChild(h3);
 
     const collator = new Intl.Collator("en", {
       numeric: true,
@@ -541,12 +542,14 @@ class Utilities {
       });
 
       const maxItems = Math.max(...this.itemsPerFlexRow(repository));
-      Array.from(document.querySelectorAll('.carousel .card')).forEach((card) => {
-        card.style = `--max-items: ${maxItems}`;
-      });
+      Array.from(document.querySelectorAll(".carousel .card")).forEach(
+        (card) => {
+          card.style = `--max-items: ${maxItems}`;
+        }
+      );
       ElementFactory.updateCarouselButton();
     });
-    
+
     spinner.remove();
   }
 
@@ -607,29 +610,28 @@ class Utilities {
       }
     });
     spinner.remove();
-    
+
     const downloadButton = ElementFactory.createDownloadButton(host, link);
     repository.appendChild(downloadButton);
-    downloadButton.addEventListener("click", function(){
+    downloadButton.addEventListener("click", function () {
       const spinner = ElementFactory.createSpinner();
       document.body.appendChild(spinner);
       FetchFactory.fetchZipStatus(host, link)
-      .then((success) => {
-        if(!success){
-          console.error("Error when creating ZIP file.");
-        }else {
-          const anchor = document.createElement('a');
-          anchor.style.display = "none";
-          anchor.href = `${host}api/download.php?folder=${link}`;
-          console.debug(`Downloading ${link}`);
-          anchor.click();
-          anchor.remove();
-        }
-      })
-      .catch(err => console.error(err.message))
-      .finally(() => {
-        spinner.remove();
-      });
+        .then((success) => {
+          if (!success) {
+            console.error("Error when creating ZIP file.");
+          } else {
+            const anchor = document.createElement("a");
+            anchor.style.display = "none";
+            anchor.href = `${host}api/download.php?folder=${link}`;
+            anchor.click();
+            anchor.remove();
+          }
+        })
+        .catch((err) => console.error(err.message))
+        .finally(() => {
+          spinner.remove();
+        });
     });
   }
 
@@ -684,16 +686,18 @@ class Utilities {
     const searchParams = new URLSearchParams(window.location.search);
     const folder = searchParams.get("folder");
     this.goToFolder(folder.split("/").slice(0, -1).join("/"));
-    setTimeout(
-      () =>
-        {
-          document
+    try {
+      setTimeout(() => {
+        document
           .querySelector(`[data-link="${folder}"]`)
           .scrollIntoView({ behavior: "smooth", block: "nearest" });
-          document.querySelector(".bumper").scrollIntoView({behaviour: "instant", block: "start"});
-        },
-      500
-    );
+        document
+          .querySelector(".bumper")
+          .scrollIntoView({ behaviour: "instant", block: "start" });
+      }, 500);
+    } catch (error) {
+      console.error("Scroll unavailable!");
+    }
   }
 
   static returnIndex() {

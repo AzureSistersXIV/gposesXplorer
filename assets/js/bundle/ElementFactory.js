@@ -108,6 +108,7 @@ export class ElementFactory {
     // Folder preview image
     const img = document.createElement("img");
     img.src = preview;
+    img.loading = "lazy";
     if (preview === "./assets/img/folder.png") img.classList = "folder";
     img.alt = preview.split("/").pop();
     container.appendChild(img);

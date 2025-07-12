@@ -106,7 +106,7 @@ body {
   left: calc(50% - 45px);
   border-width: 8px;
   border-style: solid;
-  border-color: var(--blue-dark) var(--blue-light) var(--lightblue-dark);
+  border-color: var(--blue-dark) var(--blue-light) var(--blue-light);
   border-radius: 100%;
   animation: rotation 0.7s infinite linear;
 }
