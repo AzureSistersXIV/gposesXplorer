@@ -249,7 +249,6 @@ div.repository .card .img-div:hover .overlay {
 }
 div.repository .card .img-div img {
   width: 100%;
-  scale: 0.8;
 }
 div.repository .card .img-div img.fullheight {
   width: unset;
