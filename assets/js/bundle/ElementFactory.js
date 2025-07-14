@@ -289,7 +289,7 @@ export class ElementFactory {
   static createRecentCarousel(host, recentArray = []) {
     const carousel = this.createCarousel();
     Array.from(recentArray).forEach((addition) => {
-      const link = `${addition.folder}/${addition.name}`;
+      const link = addition.folder.search(addition.name) > -1 ? `${addition.folder}` : `${addition.folder}/${addition.name}`;
       const preview =
         addition.preview !== "./assets/img/folder.png"
           ? encodeURI(`${host}${addition.preview}`)
